@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="index.css" />
+
+<title>Torque X Crew</title>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+
+<style>* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #f9f9f9;
+  color: #222;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  object-fit: cover;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ===== HEADER ===== */
+
+
+header img {
+  height: 50px;
+}
+
+/* ===== NAVIGATION ===== */
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: px;
+  margin: 20px 0;
+  font-weight: 600;
+
+}
+#prev,
+#next {
+  font-size: 28px;
+  color: #e30613;
+  background: #fff;
+  border-radius: 50%;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+#prev:hover,
+#next:hover {
+  background: #e30613;
+  color: #fff;
+  transform: scale(1.1);
+}
+#batchTitle {
+  background: #fff;
+  padding: 6px 20px;
+  border-radius: 20px;
+  color: #e30613;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== EVENT TITLE ===== */
+h2#eventName {
+  text-align: center;
+  color: #e30613;
+  font-size: 28px;
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+}
+
+/* ===== LEADERS (CAPTAIN + VICE) ===== */
+.leaders {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+.leader-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 25px 30px;
+  width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
+
+.leader-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.leader-info h3 {
+  color: #e30613;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.leader-box img {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  margin: 10px 0;
+}
+
+.leader-info p {
+  margin: 4px 0;
+  color: #333;
+  font-size: 15px;
+}
+
+@media (max-width: 768px) {
+  .leader-box {
+    width: 90%;
+  }
+}
+
+/* ===== SECTION TITLES ===== */
+.section-title {
+  text-align: center;
+  font-size: 22px;
+  color: #222;
+  margin: 40px 0 15px;
+  font-weight: 600;
+}
+
+/* ===== SUBSYSTEMS ===== */
+.sub-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 25px;
+  justify-items: center;
+  margin-bottom: 40px;
+  padding: 0 30px;
+}
+
+.sub-item {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  width: 180px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  position: relative;
+  transition: 0.3s;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sub-item:hover {
+  transform: translateY(-5px);
+}
+
+.sub-item img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 8px 0;
+}
+
+.sub-title {
+  order: -1;
+  font-weight: 600;
+  font-size: 15px;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.member-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #e30613;
+}
+
+/* ===== SUBSYSTEM ARROWS ===== */
+.sub-prev,
+.sub-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #e30613;
+  background: #fff;
+  border-radius: 50%;
+  padding: 5px 9px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+.sub-prev:hover,
+.sub-next:hover {
+  background: #e30613;
+  color: #fff;
+  transform: translateY(-50%) scale(1.1);
+}
+.sub-prev {
+  left: 10px;
+}
+.sub-next {
+  right: 10px;
+}
+
+/* ===== OTHER ROLES & DRIVERS ===== */
+.others-list,
+.drivers-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+  padding: 0 30px;
+  margin-bottom: 40px;
+}
+
+.others-item,
+.drivers-item {
+  background: #fff;
+  border-radius: 16px;
+  padding: 15px;
+  width: 160px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.others-item:hover,
+.drivers-item:hover {
+  transform: translateY(-5px);
+}
+
+.others-item img,
+.drivers-item img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 8px 0;
+}
+
+.others-item p.role,
+.drivers-item p.role {
+  order: -1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 5px;
+}
+
+.others-item p,
+.drivers-item p {
+  font-size: 14px;
+  font-weight: 500;
+  color: #e30613;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 20px;
+  font-size: 13px;
+  color: #555;
+  text-align: center;
+  background: #fff;
+}
+</style>
+</head>
+<body>
+
+<header class="header-area">
+      <!-- site-navbar start -->
+      <div class="navbar-area">
+        <div class="container">
+          <nav class="site-navbar">
+            <!-- site logo -->
+            <a href="index.html" class="site-logo"
+              ><img src="logo[1].png" alt=""
+            /></a>
+
+            <!-- site menu/nav -->
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about.html">About Us</a></li>
+               <li><a href="new.html">Crew</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+               <li><a href="event.html">Events</a></li>
+              <li><a href="sponsors.html">Sponsors</a></li>
+              <li><a href="#contactsection">Contact</a></li>
+              
+            </ul>
+
+            <!-- nav-toggler for mobile version only -->
+            <button class="nav-toggler">
+              <span></span>
+            </button>
+          </nav>
+        </div>
+      </div>
+      <!-- navbar-area end -->
+    </header>
+<script src="script.js"></script>
+<br><br><br><br><br><br><br><br><br><br>
+
+
+<div class="nav">
+  <span id="prev">⬅</span>
+  <span id="batchTitle">Batch</span>
+  <span id="next">➡</span>
+</div>
+
+<h2 id="eventName"></h2>
+
+<div class="leaders">
+  <div class="leader-box">
+    <img id="captainImg" src="" alt="Captain">
+    <div class="leader-info">
+      <h3>CAPTAIN</h3>
+      <p id="captainName"></p>
+      <p id="captainBatch"></p>
+      <p id="captainDept"></p>
+    </div>
+  </div>
+
+  <div class="leader-box">
+    <img id="viceImg" src="" alt="Vice Captain">
+    <div class="leader-info">
+      <h3>VICE CAPTAIN</h3>
+      <p id="viceName"></p>
+      <p id="viceBatch"></p>
+      <p id="viceDept"></p>
+    </div>
+  </div>
+</div>
+
+<h3 class="section-title">Subsystems</h3>
+<div id="subContainer" class="sub-container"></div>
+
+<h3 class="section-title">Other Roles</h3>
+<div id="othersContainer" class="others-list"></div>
+
+<h3 class="section-title">Drivers</h3>
+<div id="driversContainer" class="drivers-list"></div>
+<section class="contactsection" id="contactsection">
+      <h1>Contact</h1>
+      <div class="contact">
+        <div class="contactup">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.6835664325304!2d80.22393577489447!3d13.055802687267352!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5266f499eee457%3A0x4d3f7e677496e707!2sMeenakshi%20Sundararajan%20Engineering%20College!5e0!3m2!1sen!2sin!4v1758703790799!5m2!1sen!2sin"
+            height="350"
+            width="400"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            class="map"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+        <div class="contactdown">
+          <div class="locations">
+            <h2>Torque X Racing</h2>
+            <div class="address">
+              <p>Meenakshi sundararajan engineering college</p>
+            </div>
+            <div class="phone">
+              <p>Phone: +91 9345518925 </p>
+              <p>
+                Email:
+                <a href="mailto:torquex2025@gmail.com"
+                  >torquex2025@gmail.com</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="footer-container">
+      <div class="about-footer">
+        <h1>Torque X Racing</h1>
+        <p>
+          Meenakshi sundararajan engineering college
+        </p>
+        <div class="footer-links">
+          <a href="https://www.linkedin.com/company/torque-x/"
+            ><i class="ri-linkedin-fill"></i
+          ></a>
+          <a href="https://www.instagram.com/torque_x_racing?igsh=dXJ5NnF5N3ZlOGc4"
+            ><i class="ri-instagram-fill"></i
+          ></a>
+          <a href="https://www.facebook.com/profile.php?id=61579414054690&mibextid=ZbWKwL"
+            ><i class="ri-facebook-fill"></i
+          ></a>
+          
+        </div>
+        <p>Privacy Policy | © 2024 Torque x racing</p>
+        <p>
+          Developed by
+          <a href="https://www.linkedin.com/in/deepak-m-2a72472a2?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+            >Deepak M</a
+          >
+        </p>
+      </div>
+      <div class="footer-classes">
+        <h1>Quick Links</h1>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="about.html">About Us</a></p>
+        <p><a href="gallery.html">Gallery</a></p>
+        <p><a href="sponsors.html">Sponsors</a></p>
+        <p><a href="#contactsection">Contact</a></p>
+        <p><a href="admin.html">Admin</a></p>
+      </div>
+      <div class="working-footer">
+        <h1>Working Hours</h1>
+        <p>Monday - saturday:</p>
+        <p>9:30am-5:00pm</p>
+        <p>Sunday</p>
+        <p>10:00am-5:00pm</p>
+      </div>
+    </section>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+// ================= FIREBASE CONFIG =================
+const firebaseConfig = {
+  apiKey: "AIzaSyApGMnqr5ZRSqHmmmvxe3itP8HCBqlLdsA",
+  authDomain: "torque-x-events.firebaseapp.com",
+  projectId: "torque-x-events",
+  storageBucket: "torque-x-events.appspot.com",
+  messagingSenderId: "244532271723",
+  appId: "1:244532271723:web:1c345e55ed7b71c312af2e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ====================================================
+let batchEvents = []; // store unique combinations like "2025–26|H BAJA"
+let currentIndex = 0;
+
+// ================= MAIN FUNCTION =================
+async function loadCrew() {
+  const snapshot = await getDocs(collection(db, "crew"));
+  const crew = snapshot.docs.map(doc => doc.data());
+
+  // find unique batch + event combinations
+  batchEvents = [...new Set(crew.map(c => `${c.batch}|${c.event}`))];
+
+  if (batchEvents.length === 0) batchEvents = ["2025–26|H BAJA"];
+
+  // Display the first one
+  displayBatchEvent(0, crew);
+
+  // Button listeners
+  document.getElementById("prev").onclick = () => navigate(-1, crew);
+  document.getElementById("next").onclick = () => navigate(1, crew);
+}
+
+// ================= NAVIGATION =================
+function navigate(dir, crew) {
+  currentIndex += dir;
+  if (currentIndex < 0) currentIndex = batchEvents.length - 1;
+  if (currentIndex >= batchEvents.length) currentIndex = 0;
+  displayBatchEvent(currentIndex, crew);
+}
+
+// ================= DISPLAY FUNCTION =================
+function displayBatchEvent(index, crew) {
+  const [batchName, eventNameRaw] = batchEvents[index].split("|");
+  const batchCrew = crew.filter(c => c.batch === batchName && c.event === eventNameRaw);
+
+  const formattedEvent = eventNameRaw.toUpperCase().includes("BAJA")
+    ? `SAE ${eventNameRaw.toUpperCase()}`
+    : `SAE ${eventNameRaw.toUpperCase()} BAJA`;
+
+  // Update headers
+  document.getElementById("batchTitle").textContent = batchName;
+  document.getElementById("eventName").textContent = `${batchName} – ${formattedEvent}`;
+
+  // ---- CAPTAIN & VICE CAPTAIN ----
+  const captain = batchCrew.find(c => c.role.toLowerCase() === "captain");
+  const viceCaptain = batchCrew.find(c => c.role.toLowerCase().includes("vice"));
+
+  document.getElementById("captainImg").src = captain?.image || "https://via.placeholder.com/160";
+  document.getElementById("captainName").textContent = captain?.name || "";
+  document.getElementById("captainBatch").textContent = "Batch: " + (captain?.batch || "");
+  document.getElementById("captainDept").textContent = captain?.role || "";
+
+  document.getElementById("viceImg").src = viceCaptain?.image || "https://via.placeholder.com/160";
+  document.getElementById("viceName").textContent = viceCaptain?.name || "";
+  document.getElementById("viceBatch").textContent = "Batch: " + (viceCaptain?.batch || "");
+  document.getElementById("viceDept").textContent = viceCaptain?.role || "";
+
+  // ---- SUBSYSTEMS ----
+  const fixedSubsystems = ["design", "transmission", "electrical", "suspension", "steering", "brakes", "powertrain"];
+  const subsContainer = document.getElementById("subContainer");
+  subsContainer.innerHTML = "";
+
+  const subsystems = fixedSubsystems.map(sub => ({
+    name: sub.charAt(0).toUpperCase() + sub.slice(1),
+    members: batchCrew.filter(c => c.role.toLowerCase() === sub),
+    currentIndex: 0
+  })).filter(s => s.members.length > 0);
+
+  subsystems.forEach((sub, idx) => {
+    const member = sub.members[0] || {};
+    subsContainer.innerHTML += `
+      <div class="sub-item">
+        <span class="sub-prev" data-idx="${idx}">⬅</span>
+        <span class="sub-next" data-idx="${idx}">➡</span>
+        <img id="sub-img-${idx}" src="${member.image || 'https://via.placeholder.com/100'}" alt="${member.name || ''}">
+        <p class="member-name" id="sub-name-${idx}">${member.name || 'No Member'}</p>
+        <p class="sub-title">${sub.name}</p>
+      </div>`;
+  });
+
+  // Reattach subsystem navigation
+  document.querySelectorAll(".sub-prev").forEach(btn => {
+    btn.onclick = () => {
+      const i = btn.dataset.idx;
+      const sub = subsystems[i];
+      if (!sub.members.length) return;
+      sub.currentIndex = (sub.currentIndex - 1 + sub.members.length) % sub.members.length;
+      document.getElementById(`sub-img-${i}`).src = sub.members[sub.currentIndex].image;
+      document.getElementById(`sub-name-${i}`).textContent = sub.members[sub.currentIndex].name;
+    };
+  });
+
+  document.querySelectorAll(".sub-next").forEach(btn => {
+    btn.onclick = () => {
+      const i = btn.dataset.idx;
+      const sub = subsystems[i];
+      if (!sub.members.length) return;
+      sub.currentIndex = (sub.currentIndex + 1) % sub.members.length;
+      document.getElementById(`sub-img-${i}`).src = sub.members[sub.currentIndex].image;
+      document.getElementById(`sub-name-${i}`).textContent = sub.members[sub.currentIndex].name;
+    };
+  });
+
+  // ---- OTHER ROLES ----
+  const othersContainer = document.getElementById("othersContainer");
+  othersContainer.innerHTML = "";
+  const others = batchCrew.filter(c =>
+    !c.role.toLowerCase().includes("captain") &&
+    !c.role.toLowerCase().includes("driver") &&
+    !fixedSubsystems.includes(c.role.toLowerCase())
+  );
+
+  others.forEach(o => {
+    othersContainer.innerHTML += `
+      <div class="others-item">
+        <img src="${o.image || 'https://via.placeholder.com/100'}" alt="${o.name}">
+        <p>${o.name}</p>
+        <p class="role">${o.role}</p>
+      </div>`;
+  });
+
+  // ---- DRIVERS ----
+  const driversContainer = document.getElementById("driversContainer");
+  driversContainer.innerHTML = "";
+  const drivers = batchCrew.filter(c => c.role.toLowerCase().includes("driver"));
+  drivers.forEach(d => {
+    driversContainer.innerHTML += `
+      <div class="drivers-item">
+        <img src="${d.image || 'https://via.placeholder.com/100'}" alt="${d.name}">
+        <p>${d.name}</p>
+        <p class="role">${d.role}</p>
+      </div>`;
+  });
+}
+
+// ================= START =================
+loadCrew();
+</script>
+
+</body>
+</html>

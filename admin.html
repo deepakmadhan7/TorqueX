@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Torque X — Admin Panel</title>
+
+  <!-- ======================= STYLES ======================= -->
+  <style>
+    :root{
+      --accent: #ff3131;
+      --dark: #0b0b0b;
+      --card: rgba(20,20,20,0.9);
+      --muted: #bdbdbd;
+      --glass: rgba(255,255,255,0.03);
+      --success: #28a745;
+      --danger: #dc3545;
+      --max-width: 1200px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: "Poppins", Arial, sans-serif;
+      background: linear-gradient(160deg,#0b0b0b 0%, #141414 60%);
+      color: #fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 20px;
+      background: linear-gradient(90deg, rgba(255,49,49,0.08), rgba(255,49,49,0.02));
+      border-bottom:1px solid rgba(255,255,255,0.04);
+      position:sticky; top:0; z-index:50;
+    }
+    header h1{ margin:0; font-size:1.25rem; color:var(--accent); letter-spacing:0.6px; }
+    header .sub{ font-size:0.85rem; color:var(--muted); }
+
+    .wrap{
+      max-width: var(--max-width);
+      margin:22px auto;
+      padding: 0 16px 80px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap:20px;
+      align-items:start;
+    }
+
+    /* left panel */
+    .panel {
+      background: var(--card);
+      border-radius:12px;
+      padding:18px;
+      box-shadow: 0 6px 30px rgba(0,0,0,0.6);
+      border:1px solid rgba(255,49,49,0.06);
+    }
+    .panel h2{ margin:0 0 10px 0; font-size:1.05rem; color:var(--accent); }
+    label{ display:block; font-size:0.85rem; margin:8px 0 4px; color:var(--muted); }
+    input[type="text"], input[type="email"], input[type="date"], input[type="number"], textarea, input[type="file"]{
+      width:100%;
+      padding:10px 12px;
+      background:#0f0f0f;
+      border:1px solid rgba(255,255,255,0.04);
+      border-radius:8px;
+      color:#fff;
+      outline:none;
+      font-size:0.95rem;
+    }
+    textarea{ min-height:90px; resize:vertical; }
+    small.hint{ display:block; color:var(--muted); margin-top:6px; }
+
+    .btn{
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:10px;
+      border:none;
+      background:var(--accent);
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+      margin-top:12px;
+    }
+    .btn.secondary{ background:#ffffff11; color:var(--accent); border:1px solid rgba(255,49,49,0.06); }
+    .btn.danger{ background:var(--danger); }
+
+    /* right column */
+    .content{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;
+      padding:14px;
+      border:1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 8px 35px rgba(0,0,0,0.55);
+    }
+    .card h3{ margin:0 0 10px 0; color:var(--accent); }
+    ul.list{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; max-height:380px; overflow:auto; }
+
+    .list-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:#0c0c0c;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .list-item .meta{ text-align:left; }
+    .list-item small{ display:block; color:var(--muted); }
+
+    .actions{ display:flex; gap:8px; }
+    .actions button{ padding:6px 10px; border-radius:8px; font-size:0.85rem; }
+
+    /* responsive */
+    @media (max-width:980px){
+      .grid{ grid-template-columns: 1fr; }
+      header h1{ font-size:1rem; }
+    }
+    #crew-event-upload {
+  border: 2px solid #ff3131;
+  padding: 15px;
+  margin-top: 20px;
+  background-color: #1a1a1a;
+}
+
+  </style>
+
+  <!-- ======================= SCRIPT: FIREBASE + ADMIN LOGIC ======================= -->
+  <script type="module">
+    // Imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
+
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    // Firebase config (provided earlier)
+    const firebaseConfig = {
+      apiKey: "AIzaSyApGMnqr5ZRSqHmmmvxe3itP8HCBqlLdsA",
+      authDomain: "torque-x-events.firebaseapp.com",
+      projectId: "torque-x-events",
+      storageBucket: "torque-x-events.appspot.com",
+      messagingSenderId: "244532271723",
+      appId: "1:244532271723:web:1c345e55ed7b71c312af2e"
+    };
+
+    // Init
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+const storage = getStorage(app);
+
+    // Cloudinary Upload helper
+    async function uploadFileToCloudinary(file, folder = "admin_uploads"){
+      if (!file) return "";
+      const url = "https://api.cloudinary.com/v1_1/dphua9def/upload";
+      const preset = "unsigned_preset"; // change if needed
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("upload_preset", preset);
+      fd.append("folder", folder);
+      const res = await fetch(url, { method: "POST", body: fd });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error("Cloudinary upload failed: " + text);
+      }
+      const data = await res.json();
+      return data.secure_url || "";
+    }
+    const file = el("crew-image").files[0];
+let imageUrl = "";
+
+if (file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "unsigned_preset"); // your preset name
+
+  const res = await fetch("https://api.cloudinary.com/v1_1/dphua9def/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = await res.json();
+  imageUrl = data.secure_url;
+}
+
+
+
+    // ---------- Utility ----------
+    function el(id){ return document.getElementById(id); }
+    function emptyNode(node){ while(node.firstChild) node.removeChild(node.firstChild); }
+
+    // ---------- AUTH ----------
+    async function login(){
+      try{
+        const email = el("admin-email").value.trim();
+        const pwd = el("admin-password").value;
+        if(!email || !pwd){ alert("Enter credentials"); return; }
+        await signInWithEmailAndPassword(auth, email, pwd);
+        // show admin area
+        el("auth-box").style.display = "none";
+        el("main-admin").style.display = "block";
+        await loadAllSections();
+        console.log("Logged in as", email);
+      }catch(err){
+        alert("Login failed: " + err.message);
+        console.error(err);
+      }
+    }
+
+    // ---------- STATE: editing ids ----------
+    let editingNewsId = null;
+    let editingEventId = null;
+    let editingCompanyId = null;
+    let editingAlumniId = null;
+    let editingGalleryId = null;
+
+    // ---------- NEWS CRUD ----------
+    async function saveNews(){
+      const title = el("news-title").value.trim();
+      const date = el("news-date").value;
+      const content = el("news-content").value.trim();
+      const file = el("news-image").files[0];
+      if(!title || !date || !content){ alert("Fill title, date, content"); return; }
+      try{
+        let imageUrl = "";
+        if(file) imageUrl = await uploadFileToCloudinary(file, "news");
+        if(editingNewsId){
+          const ref = doc(db, "news", editingNewsId);
+          await updateDoc(ref, { title, date, content, ...(imageUrl && { image: imageUrl }) });
+          editingNewsId = null;
+          el("news-save-btn").textContent = "Add News";
+          alert("News updated");
+        } else {
+          await addDoc(collection(db, "news"), { title, date, content, image: imageUrl });
+          alert("News added");
+        }
+        el("news-title").value = ""; el("news-date").value = ""; el("news-content").value = ""; el("news-image").value = "";
+        loadNews();
+      }catch(e){ console.error(e); alert("Save failed: " + e.message); }
+    }
+
+    async function loadNews(){
+      const list = el("news-list");
+      emptyNode(list);
+      try{
+        const snap = await getDocs(collection(db, "news"));
+        snap.forEach(docSnap=>{
+          const data = docSnap.data();
+          const li = document.createElement("li");
+          li.className = "list-item";
+          li.innerHTML = `
+            <div class="meta">
+              <strong>${data.title || "Untitled"}</strong>
+              <small>${data.date || ""}</small>
+              <small style="color:var(--muted)">${(data.content || "").substring(0,120)}</small>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" data-id="${docSnap.id}" data-type="edit-news">Edit</button>
+              <button class="btn danger" data-id="${docSnap.id}" data-type="delete-news">Delete</button>
+            </div>
+          `;
+          list.appendChild(li);
+        });
+      }catch(e){ console.error("loadNews", e); }
+    }
+
+    function bindNewsActions(e){
+      const t = e.target;
+      if(!t.dataset) return;
+      const id = t.dataset.id;
+      if(t.dataset.type === "edit-news"){ editNews(id); }
+      if(t.dataset.type === "delete-news"){ if(confirm("Delete news?")) deleteNews(id); }
+    }
+
+    async function editNews(id){
+      try{
+        // fetch doc
+        const snaps = await getDocs(collection(db, "news"));
+        let found = null;
+        snaps.forEach(s => { if(s.id === id) found = { id:s.id, data:s.data() }; });
+        if(!found){ alert("Not found"); return; }
+        const data = found.data;
+        el("news-title").value = data.title || "";
+        el("news-date").value = data.date || "";
+        el("news-content").value = data.content || "";
+        editingNewsId = id;
+        el("news-save-btn").textContent = "Update News";
+        window.scrollTo({top:0, behavior:"smooth"});
+      }catch(e){ console.error(e); }
+    }
+
+    async function deleteNews(id){
+      try{
+        await deleteDoc(doc(db, "news", id));
+        alert("News deleted");
+        loadNews();
+      }catch(e){ console.error(e); alert("Delete failed"); }
+    }
+
+    // ---------- EVENTS CRUD ----------
+    async function saveEvent(){
+      const title = el("event-title").value.trim();
+      const date = el("event-date").value;
+      const description = el("event-description").value.trim();
+      const link = el("event-link").value.trim();
+      const file = el("event-image").files[0];
+      if(!title || !date || !description){ alert("Fill required fields"); return; }
+      try{
+        let imageUrl = "";
+        if(file) imageUrl = await uploadFileToCloudinary(file, "events");
+        if(editingEventId){
+          await updateDoc(doc(db,"events",editingEventId), { title, date, description, registerLink: link, ...(imageUrl && { image: imageUrl }) });
+          editingEventId = null; el("event-save-btn").textContent = "Add Event";
+          alert("Event updated");
+        }else{
+          await addDoc(collection(db,"events"), { title, date, description, registerLink: link, image: imageUrl });
+          alert("Event added");
+        }
+        el("event-title").value=""; el("event-date").value=""; el("event-description").value=""; el("event-link").value=""; el("event-image").value="";
+        loadEvents();
+      }catch(e){ console.error(e); alert("Save failed: "+e.message); }
+    }
+
+    async function loadEvents(){
+      const list = el("event-list");
+      emptyNode(list);
+      try{
+        const snap = await getDocs(collection(db,"events"));
+        snap.forEach(docSnap=>{
+          const data = docSnap.data();
+          const li = document.createElement("li");
+          li.className = "list-item";
+          li.innerHTML = `
+            <div class="meta">
+              <strong>${data.title || "Untitled"}</strong>
+              <small>${data.date || ""}</small>
+              <small style="color:var(--muted)">${(data.description || "").substring(0,120)}</small>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" data-id="${docSnap.id}" data-type="edit-event">Edit</button>
+              <button class="btn danger" data-id="${docSnap.id}" data-type="delete-event">Delete</button>
+            </div>
+          `;
+          list.appendChild(li);
+        });
+      }catch(e){ console.error("loadEvents", e); }
+    }
+
+    function bindEventActions(e){
+      const t = e.target;
+      if(!t.dataset) return;
+      const id = t.dataset.id;
+      if(t.dataset.type === "edit-event"){ editEvent(id); }
+      if(t.dataset.type === "delete-event"){ if(confirm("Delete event?")) deleteEvent(id); }
+    }
+
+    async function editEvent(id){
+      try{
+        const snap = await getDocs(collection(db,"events"));
+        let found=null;
+        snap.forEach(s=>{ if(s.id===id) found={id:s.id,data:s.data()}; });
+        if(!found){ alert("Not found"); return; }
+        const data = found.data;
+        el("event-title").value = data.title || "";
+        el("event-date").value = data.date || "";
+        el("event-description").value = data.description || "";
+        el("event-link").value = data.registerLink || "";
+        editingEventId = id; el("event-save-btn").textContent = "Update Event";
+        window.scrollTo({top:0, behavior:"smooth"});
+      }catch(e){ console.error(e); }
+    }
+
+    async function deleteEvent(id){
+      try{
+        await deleteDoc(doc(db,"events",id));
+        alert("Event deleted");
+        loadEvents();
+      }catch(e){ console.error(e); alert("Delete failed"); }
+    }
+
+    // ---------- COMPANIES CRUD ----------
+    async function saveCompany(){
+      const name = el("company-name").value.trim();
+      const description = el("company-description").value.trim();
+      const link = el("company-link").value.trim();
+      const file = el("company-image").files[0];
+      if(!name){ alert("Company name required"); return; }
+      try{
+        let imageUrl = "";
+        if(file) imageUrl = await uploadFileToCloudinary(file, "companies");
+        if(editingCompanyId){
+          await updateDoc(doc(db,"companies",editingCompanyId), { name, description, registerLink: link, ...(imageUrl && { image: imageUrl }) });
+          editingCompanyId = null; el("company-save-btn").textContent = "Add Company";
+          alert("Company updated");
+        }else{
+          await addDoc(collection(db,"companies"), { name, description, registerLink: link, image: imageUrl });
+          alert("Company added");
+        }
+        el("company-name").value = ""; el("company-description").value=""; el("company-link").value=""; el("company-image").value="";
+        loadCompanies();
+      }catch(e){ console.error(e); alert("Company save failed: "+e.message); }
+    }
+
+    async function loadCompanies(){
+      const list = el("company-list");
+      emptyNode(list);
+      try{
+        const snap = await getDocs(collection(db,"companies"));
+        snap.forEach(docSnap=>{
+          const data = docSnap.data();
+          const li = document.createElement("li");
+          li.className = "list-item";
+          li.innerHTML = `
+            <div class="meta">
+              <strong>${data.name || "Company"}</strong>
+              <small>${(data.description||"").substring(0,120)}</small>
+              <small style="color:var(--muted)">${data.registerLink || ""}</small>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" data-id="${docSnap.id}" data-type="edit-company">Edit</button>
+              <button class="btn danger" data-id="${docSnap.id}" data-type="delete-company">Delete</button>
+            </div>
+          `;
+          list.appendChild(li);
+        });
+      }catch(e){ console.error("loadCompanies", e); }
+    }
+
+    function bindCompanyActions(e){
+      const t = e.target;
+      if(!t.dataset) return;
+      const id = t.dataset.id;
+      if(t.dataset.type === "edit-company"){ editCompany(id); }
+      if(t.dataset.type === "delete-company"){ if(confirm("Delete company?")) deleteCompany(id); }
+    }
+
+    async function editCompany(id){
+      try{
+        const snap = await getDocs(collection(db,"companies"));
+        let found = null;
+        snap.forEach(s=>{ if(s.id===id) found={id:s.id,data:s.data()}; });
+        if(!found){ alert("Not found"); return; }
+        const data = found.data;
+        el("company-name").value = data.name || "";
+        el("company-description").value = data.description || "";
+        el("company-link").value = data.registerLink || "";
+        editingCompanyId = id;
+        el("company-save-btn").textContent = "Update Company";
+        window.scrollTo({top:0, behavior:"smooth"});
+      }catch(e){ console.error(e); }
+    }
+
+    async function deleteCompany(id){
+      try{
+        await deleteDoc(doc(db,"companies",id));
+        alert("Company deleted");
+        loadCompanies();
+      }catch(e){ console.error(e); alert("Delete failed"); }
+    }
+
+    // ---------- ALUMNI SPONSORS CRUD ----------
+    async function saveAlumniSponsor(){
+      const name = el("alumni-name").value.trim();
+      const batch = el("alumni-batch").value.trim();
+      const amount = el("alumni-amount").value.trim();
+      const note = el("alumni-note").value.trim();
+      const file = el("alumni-image").files[0];
+      if(!name || !batch || !amount){ alert("Fill name, batch, amount"); return; }
+      try{
+        let imageUrl = "";
+        if(file) imageUrl = await uploadFileToCloudinary(file, "alumniSponsors");
+        if(editingAlumniId){
+          await updateDoc(doc(db,"alumniSponsors",editingAlumniId), { name, batch, amount, thankNote: note, ...(imageUrl && { image: imageUrl }) });
+          editingAlumniId = null; el("alumni-save-btn").textContent = "Add Alumni";
+          alert("Alumni updated");
+        }else{
+          await addDoc(collection(db,"alumniSponsors"), { name, batch, amount, thankNote: note, image: imageUrl });
+          alert("Alumni added");
+        }
+        el("alumni-name").value=""; el("alumni-batch").value=""; el("alumni-amount").value=""; el("alumni-note").value=""; el("alumni-image").value="";
+        loadAlumniSponsors();
+      }catch(e){ console.error(e); alert("Save failed: "+e.message); }
+    }
+
+    async function loadAlumniSponsors(){
+      const list = el("alumni-list");
+      emptyNode(list);
+      try{
+        const snap = await getDocs(collection(db,"alumniSponsors"));
+        snap.forEach(docSnap=>{
+          const data = docSnap.data();
+          const li = document.createElement("li");
+          li.className = "list-item";
+          li.innerHTML = `
+            <div class="meta">
+              <strong>${data.name || "Alumni"}</strong>
+              <small>Batch: ${data.batch || ""} • ₹${data.amount || "0"}</small>
+              <small style="color:var(--muted)">${data.thankNote || ""}</small>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" data-id="${docSnap.id}" data-type="edit-alumni">Edit</button>
+              <button class="btn danger" data-id="${docSnap.id}" data-type="delete-alumni">Delete</button>
+            </div>
+          `;
+          list.appendChild(li);
+        });
+      }catch(e){ console.error("loadAlumniSponsors", e); }
+    }
+
+    function bindAlumniActions(e){
+      const t = e.target;
+      if(!t.dataset) return;
+      const id = t.dataset.id;
+      if(t.dataset.type === "edit-alumni"){ editAlumni(id); }
+      if(t.dataset.type === "delete-alumni"){ if(confirm("Delete alumni sponsor?")) deleteAlumni(id); }
+    }
+
+    async function editAlumni(id){
+      try{
+        const snap = await getDocs(collection(db,"alumniSponsors"));
+        let found=null;
+        snap.forEach(s=>{ if(s.id===id) found={id:s.id,data:s.data()}; });
+        if(!found){ alert("Not found"); return; }
+        const data = found.data;
+        el("alumni-name").value = data.name || "";
+        el("alumni-batch").value = data.batch || "";
+        el("alumni-amount").value = data.amount || "";
+        el("alumni-note").value = data.thankNote || "";
+        editingAlumniId = id;
+        el("alumni-save-btn").textContent = "Update Alumni";
+        window.scrollTo({top:0, behavior:"smooth"});
+      }catch(e){ console.error(e); }
+    }
+
+    async function deleteAlumni(id){
+      try{
+        await deleteDoc(doc(db,"alumniSponsors",id));
+        alert("Alumni deleted");
+        loadAlumniSponsors();
+      }catch(e){ console.error(e); alert("Delete failed"); }
+    }
+
+
+async function saveGallery(){
+  const title = el("gallery-title").value.trim();
+  const batch = el("gallery-batch").value.trim(); 
+  const file = el("gallery-image").files[0];
+  if(!title || !file){ alert("Title and image are required"); return; }
+
+  try{
+    const imageUrl = await uploadFileToCloudinary(file, "gallery");
+
+    if(editingGalleryId){
+      await updateDoc(doc(db,"gallery",editingGalleryId), { title, batch, image: imageUrl });
+      editingGalleryId = null;
+      el("gallery-save-btn").textContent = "Add Image";
+      alert("Gallery image updated");
+    } else {
+      await addDoc(collection(db, "gallery"), {
+        title,
+        batch,
+        image: imageUrl
+      });
+      alert("Gallery image added");
+    }
+
+    // Clear form
+    el("gallery-title").value = ""; 
+    el("gallery-batch").value = "";
+    el("gallery-image").value = "";
+    
+    loadGallery();
+  } catch(e){
+    console.error(e); 
+    alert("Save failed: " + e.message);
+  }
+}
+
+async function loadGallery(){
+  const list = el("gallery-list");
+  emptyNode(list);
+  try{
+    const snap = await getDocs(collection(db,"gallery"));
+    snap.forEach(docSnap=>{
+      const data = docSnap.data();
+      const li = document.createElement("li");
+      li.className = "list-item";
+      li.innerHTML = `
+        <div class="meta">
+          <strong>${data.title || "Untitled"}</strong>
+          <small>Batch: ${data.batch || "N/A"}</small>
+          <img src="${data.image || ""}" style="max-width:100px; border-radius:6px; margin-top:6px;">
+        </div>
+        <div class="actions">
+          <button class="btn secondary" data-id="${docSnap.id}" data-type="edit-gallery">Edit</button>
+          <button class="btn danger" data-id="${docSnap.id}" data-type="delete-gallery">Delete</button>
+        </div>
+      `;
+      list.appendChild(li);
+    });
+  }catch(e){ console.error("loadGallery", e); }
+}
+let editingCrewId = null;
+
+async function saveCrew() {
+  const eventName = el("event-name").value.trim();
+  const name = el("crew-name").value.trim();
+  const role = el("crew-role").value.trim();
+  const batch = el("crew-batch").value.trim();
+  const linkedin = el("crew-linkedin").value.trim();
+  const instagram = el("crew-instagram").value.trim();
+
+  if (!name || !role || !batch || !eventName) {
+    alert("Please fill all required fields (Event, Name, Role, Batch)");
+    return;
+  }
+
+  try {
+    let imageUrl = "";
+    const file = el("crew-image").files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "unsigned_preset"); // your preset
+      const res = await fetch("https://api.cloudinary.com/v1_1/dphua9def/upload", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      imageUrl = data.secure_url;
+    }
+
+    const crewData = {
+      name,
+      role,
+      batch,
+      event: eventName,
+      socials: { linkedin, instagram },
+      image: imageUrl
+    };
+
+    if (editingCrewId) {
+      await updateDoc(doc(db, "crew", editingCrewId), crewData);
+      editingCrewId = null;
+      el("crew-save-btn").textContent = "Add Crew";
+      alert("Crew member updated successfully!");
+    } else {
+      await addDoc(collection(db, "crew"), crewData);
+      alert("Crew member added successfully!");
+    }
+
+    // Clear form
+    el("event-name").value = "";
+    el("crew-name").value = "";
+    el("crew-role").value = "";
+    el("crew-batch").value = "";
+    el("crew-linkedin").value = "";
+    el("crew-instagram").value = "";
+    el("crew-image").value = "";
+
+    loadCrew();
+  } catch (e) {
+    console.error(e);
+    alert("Save failed: " + e.message);
+  }
+};
+
+
+
+async function loadCrew(){
+  const list = el("crew-list"); emptyNode(list);
+  try{
+    const snap = await getDocs(collection(db,"crew"));
+    snap.forEach(docSnap=>{
+      const data = docSnap.data();
+      const li = document.createElement("li");
+      li.className = "list-item";
+      li.innerHTML = `
+        <div class="meta">
+          <strong>${data.name}</strong> • ${data.role}
+          <small>Batch: ${data.batch}</small>
+          ${data.image ? `<img src="${data.image}" style="max-width:80px;border-radius:6px;margin-top:4px;">` : ""}
+          <small style="color:var(--muted)">
+            ${data.socials?.linkedin || ""} ${data.socials?.instagram || ""}
+          </small>
+        </div>
+        <div class="actions">
+          <button class="btn secondary" data-id="${docSnap.id}" data-type="edit-crew">Edit</button>
+          <button class="btn danger" data-id="${docSnap.id}" data-type="delete-crew">Delete</button>
+        </div>
+      `;
+      list.appendChild(li);
+    });
+  } catch(e){ console.error(e); }
+}
+
+function bindCrewActions(e){
+  const t = e.target; if(!t.dataset) return;
+  const id = t.dataset.id;
+  if(t.dataset.type==="edit-crew"){ editCrew(id); }
+  if(t.dataset.type==="delete-crew"){ if(confirm("Delete crew member?")) deleteCrew(id); }
+}
+
+async function editCrew(id){
+  try{
+    const snap = await getDocs(collection(db,"crew"));
+    let found = null;
+    snap.forEach(s=>{ if(s.id===id) found={id:s.id,data:s.data()}; });
+    if(!found){ alert("Not found"); return; }
+    const data = found.data;
+    el("crew-name").value = data.name || "";
+    el("crew-role").value = data.role || "";
+    el("crew-batch").value = data.batch || "";
+    el("crew-linkedin").value = data.socials?.linkedin || "";
+    el("crew-instagram").value = data.socials?.instagram || "";
+    editingCrewId = id;
+    el("crew-save-btn").textContent = "Update Crew";
+    window.scrollTo({top:0, behavior:"smooth"});
+  } catch(e){ console.error(e); }
+}
+
+async function deleteCrew(id){
+  try{
+    await deleteDoc(doc(db,"crew",id));
+    alert("Crew member deleted");
+    loadCrew();
+  } catch(e){ console.error(e); alert("Delete failed"); }
+}
+
+
+
+function bindGalleryActions(e){
+  const t = e.target;
+  if(!t.dataset) return;
+  const id = t.dataset.id;
+  if(t.dataset.type === "edit-gallery"){ editGallery(id); }
+  if(t.dataset.type === "delete-gallery"){ if(confirm("Delete this image?")) deleteGallery(id); }
+}
+
+async function editGallery(id){
+  try{
+    const snap = await getDocs(collection(db,"gallery"));
+    let found = null;
+    snap.forEach(s=>{ if(s.id===id) found={id:s.id,data:s.data()}; });
+    if(!found){ alert("Not found"); return; }
+    const data = found.data;
+    el("gallery-title").value = data.title || "";
+    editingGalleryId = id;
+    el("gallery-save-btn").textContent = "Update Image";
+    window.scrollTo({top:0, behavior:"smooth"});
+  }catch(e){ console.error(e); }
+}
+
+async function deleteGallery(id){
+  try{
+    await deleteDoc(doc(db,"gallery",id));
+    alert("Gallery image deleted");
+    loadGallery();
+  }catch(e){ console.error(e); alert("Delete failed"); }
+
+  
+}
+async function loadEventOptions() {
+  const select = el("event-name");
+  select.innerHTML = '<option value="">Select Event</option>';
+  try {
+    const eventsSnap = await getDocs(collection(db, "events"));
+    const crewSnap = await getDocs(collection(db, "crewEvents"));
+
+    // Merge both collections
+    const allEvents = [...eventsSnap.docs, ...crewSnap.docs];
+
+    allEvents.forEach(docSnap => {
+      const data = docSnap.data();
+      const option = document.createElement("option");
+      option.value = data.name || data.title;
+      option.textContent = data.name || data.title;
+      select.appendChild(option);
+    });
+  } catch (e) {
+    console.error("Failed to load events:", e);
+  }
+}
+
+// =============== SAVE EVENT NAME (ADMIN) ===================
+import { query, where } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+async function saveBatchEvent() {
+  const batch = el("event-batch-input").value.trim();
+  const eventName = el("event-name-input").value.trim();
+
+  if (!batch || !eventName) {
+    alert("Please fill both Batch and Event Name");
+    return;
+  }
+
+  try {
+    const q = query(collection(db, "events"), where("batch", "==", batch));
+    const snap = await getDocs(q);
+
+    if (!snap.empty) {
+      const id = snap.docs[0].id;
+      await updateDoc(doc(db, "events", id), { eventName });
+      alert("✅ Event name updated for " + batch);
+    } else {
+      await addDoc(collection(db, "events"), { batch, eventName });
+      alert("✅ Event name saved for " + batch);
+    }
+
+    el("event-batch-input").value = "";
+    el("event-name-input").value = "";
+  } catch (err) {
+    console.error(err);
+    alert("❌ Failed to save: " + err.message);
+  }
+}
+// Grab input and button
+const crewEventNameInput = document.getElementById('crew-event-name');
+const uploadCrewEventBtn = document.getElementById('upload-crew-event-btn');
+// =============== CREW EVENT UPLOAD (MODULAR FIREBASE) ===================
+import { serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+async function uploadCrewEvent() {
+  const input = el("crew-event-name");
+  const name = input.value.trim();
+
+  if (!name) {
+    alert("Please enter an event name");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "crewEvents"), {
+      name,
+      createdAt: serverTimestamp()
+    });
+    alert("Crew event uploaded successfully!");
+    input.value = "";
+  } catch (err) {
+    console.error(err);
+    alert("Error uploading event: " + err.message);
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const btn = el("upload-crew-event-btn");
+  if (btn) btn.addEventListener("click", uploadCrewEvent);
+});
+
+
+// Button click event
+
+
+
+
+
+    // ---------- LOAD ALL ----------
+    async function loadAllSections(){
+      await Promise.all([ loadNews(), loadEvents(), loadCompanies(), loadAlumniSponsors(),loadGallery(),loadEventOptions() ]);
+    }
+
+    // ---------- Event Delegation binding for lists ----------
+    function setupDelegation(){
+      el("news-list").addEventListener("click", bindNewsActions);
+      el("event-list").addEventListener("click", bindEventActions);
+      el("company-list").addEventListener("click", bindCompanyActions);
+      el("alumni-list").addEventListener("click", bindAlumniActions);
+      el("gallery-list").addEventListener("click", bindGalleryActions);
+      el("crew-list").addEventListener("click", bindCrewActions);
+    }
+
+    // ---------- Init UI bindings ----------
+    window.addEventListener("DOMContentLoaded", ()=>{
+      // auth bind
+      el("login-btn").addEventListener("click", login);
+
+      // save buttons
+      el("news-save-btn").addEventListener("click", saveNews);
+      el("event-save-btn").addEventListener("click", saveEvent);
+      el("company-save-btn").addEventListener("click", saveCompany);
+      el("alumni-save-btn").addEventListener("click", saveAlumniSponsor);
+      el("gallery-save-btn").addEventListener("click", saveGallery);
+      el("crew-save-btn").addEventListener("click", saveCrew);
+
+      setupDelegation();
+      console.log("Admin UI initialized");
+    });
+
+    // Expose a couple functions to global so inline onclick (if used) works
+    window.saveNews = saveNews;
+    window.saveEvent = saveEvent;
+    window.saveCompany = saveCompany;
+    window.saveAlumniSponsor = saveAlumniSponsor;
+    window.saveGallery = saveGallery;
+  </script>
+</head>
+<body>
+  <header>
+    <h1>⚙️ Torque X — Admin Panel</h1>
+    <div class="sub">Manage News, Events, Company Sponsors & Alumni Sponsors</div>
+  </header>
+
+  <div class="wrap">
+    <div id="auth-box" class="panel" style="margin-bottom:18px;">
+      <h2>Admin Login</h2>
+      <label for="admin-email">Email</label>
+      <input id="admin-email" type="email" placeholder="admin@your.org" value="">
+      <label for="admin-password">Password</label>
+      <input id="admin-password" type="password" placeholder="password">
+      <small class="hint">This login uses Firebase Authentication (Email/Password).</small>
+      <div style="margin-top:12px;">
+        <button id="login-btn" class="btn">Login</button>
+      </div>
+    </div>
+
+    <div id="main-admin" style="display:none;">
+      <div class="grid">
+        <!-- LEFT: forms -->
+        <div>
+          <div class="panel">
+            <h2>Add / Edit News</h2>
+            <label>Title</label><input id="news-title" type="text" placeholder="News headline">
+            <label>Date</label><input id="news-date" type="date">
+            <label>Content</label><textarea id="news-content" placeholder="Long content, supports line breaks"></textarea>
+            <label>Image (optional)</label><input id="news-image" type="file" accept="image/*">
+            <div style="display:flex; gap:8px; margin-top:10px;">
+              <button id="news-save-btn" class="btn">Add News</button>
+              <button class="btn secondary" onclick="el('news-title').value=''; el('news-date').value=''; el('news-content').value=''; el('news-image').value='';">Clear</button>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:14px;">
+            <h2>Add / Edit Event</h2>
+            <label>Title</label><input id="event-title" type="text" placeholder="Event Title">
+            <label>Date</label><input id="event-date" type="date">
+            <label>Description</label><textarea id="event-description" placeholder="Event details"></textarea>
+            <label>Register Link (optional)</label><input id="event-link" type="text" placeholder="https://...">
+            <label>Image (optional)</label><input id="event-image" type="file" accept="image/*">
+            <div style="display:flex; gap:8px; margin-top:10px;">
+              <button id="event-save-btn" class="btn">Add Event</button>
+              <button class="btn secondary" onclick="el('event-title').value=''; el('event-date').value=''; el('event-description').value=''; el('event-link').value=''; el('event-image').value='';">Clear</button>
+            </div>
+          </div>
+          <!-- Crew Event Upload Section -->
+<div id="crew-event-upload">
+  <h2>Crew Event Upload</h2>
+  <input type="text" id="crew-event-name" placeholder="Enter Event Name" />
+  <button id="upload-crew-event-btn">Upload</button>
+</div>
+
+
+          <div class="panel" style="margin-top:14px;">
+            <h2>Add / Edit Company Sponsor</h2>
+            <label>Company Name</label><input id="company-name" type="text" placeholder="Company name">
+            <label>Description</label><textarea id="company-description" placeholder="Short description"></textarea>
+            <label>Website / Register Link</label><input id="company-link" type="text" placeholder="https://...">
+            <label>Image (optional)</label><input id="company-image" type="file" accept="image/*">
+            <div style="display:flex; gap:8px; margin-top:10px;">
+              <button id="company-save-btn" class="btn">Add Company</button>
+              <button class="btn secondary" onclick="el('company-name').value=''; el('company-description').value=''; el('company-link').value=''; el('company-image').value='';">Clear</button>
+            </div>
+          </div>
+
+
+          <div class="panel" style="margin-top:14px;">
+            <h2>Add / Edit Alumni Sponsor</h2>
+            <label>Name</label><input id="alumni-name" type="text" placeholder="Alumni name">
+            <label>Batch</label><input id="alumni-batch" type="text" placeholder="e.g., 2016">
+            <label>Amount (₹)</label><input id="alumni-amount" type="number" placeholder="Amount">
+            <label>Thank Note (optional)</label><textarea id="alumni-note" placeholder="Thank you note"></textarea>
+            <label>Image (optional)</label><input id="alumni-image" type="file" accept="image/*">
+            <div style="display:flex; gap:8px; margin-top:10px;">
+              <button id="alumni-save-btn" class="btn">Add Alumni</button>
+              <button class="btn secondary" onclick="el('alumni-name').value=''; el('alumni-batch').value=''; el('alumni-amount').value=''; el('alumni-note').value=''; el('alumni-image').value='';">Clear</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel" style="margin-top:14px;">
+  <h2>Add / Edit Gallery Image</h2>
+  <label>Title</label>
+  <input id="gallery-title" type="text" placeholder="Image title">
+  <label>Batch</label>
+<input id="gallery-batch" type="text" placeholder="e.g., 2016">
+
+  <label>Image</label>
+  <input id="gallery-image" type="file" accept="image/*">
+  <div style="display:flex; gap:8px; margin-top:10px;">
+    <button id="gallery-save-btn" class="btn">Add Image</button>
+    <button class="btn secondary" onclick="el('gallery-title').value=''; el('gallery-image').value='';">Clear</button>
+  </div>
+  <div class="panel" style="margin-top:14px;">
+  <h2>Add / Edit Crew Member</h2>
+  <label for="event-name">Event Name</label>
+  <input id="event-name" type="text" placeholder="Enter event name">
+  <label>Name</label>
+  <input id="crew-name" type="text" placeholder="Crew member name">
+  <label>Role</label>
+  <input id="crew-role" type="text" placeholder="Role in team">
+  <label>Batch</label>
+  <input id="crew-batch" type="text" placeholder="e.g., 2021">
+  <label>LinkedIn</label>
+  <input id="crew-linkedin" type="text" placeholder="https://linkedin.com/...">
+  <label>Instagram</label>
+  <input id="crew-instagram" type="text" placeholder="https://instagram.com/...">
+  <label>Profile Image</label>
+  <input id="crew-image" type="file" accept="image/*">
+  <div style="display:flex; gap:8px; margin-top:10px;">
+    <button id="crew-save-btn" class="btn">Add Crew</button>
+    <button class="btn secondary" onclick="
+      el('crew-name').value='';
+       el('event-name').value='';
+      
+      el('crew-role').value='';
+      el('crew-batch').value='';
+      el('crew-linkedin').value='';
+      el('crew-instagram').value='';
+      el('crew-image').value='';
+    ">Clear</button>
+  </div>
+</div>
+<div class="panel" style="margin-top:14px;">
+  <h2>Add / Edit Subsystem</h2>
+  <label>Event Name</label>
+  <select id="event-name">
+  <option value="">Select Event</option>
+</select>
+
+  <label>Name</label>
+  <input id="subsystem-name" type="text" placeholder="Subsystem name">
+  <label>Description</label>
+  <textarea id="subsystem-description" placeholder="Description"></textarea>
+  <label>Image (optional)</label>
+  <input id="subsystem-image" type="file" accept="image/*">
+  
+  <div style="display:flex; gap:8px; margin-top:10px;">
+    <button id="crew-save-btn" class="btn">Add Crew</button>
+    <button class="btn secondary" onclick="
+      el('event-name').value='';
+      el('crew-name').value='';
+      el('crew-role').value='';
+      el('crew-batch').value='';
+      el('crew-linkedin').value='';
+      el('crew-instagram').value='';
+      el('crew-image').value='';
+      editingCrewId=null;
+      el('crew-save-btn').textContent='Add Crew';
+    ">Clear</button>
+  </div>
+</div>
+
+
+</div>
+
+
+        <!-- RIGHT: lists -->
+        <div class="content">
+          <div class="card">
+            <h3>News</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <small class="hint">Click Edit to load into the form above.</small>
+              <button class="btn secondary" onclick="loadNews()">Refresh</button>
+            </div>
+            <ul id="news-list" class="list"></ul>
+          </div>
+
+          <div class="card">
+            <h3>Events</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <small class="hint">Manage upcoming events</small>
+              <button class="btn secondary" onclick="loadEvents()">Refresh</button>
+            </div>
+            <ul id="event-list" class="list"></ul>
+          </div>
+
+          <div class="card">
+            <h3>Company Sponsors</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <small class="hint">Companies collection</small>
+              <button class="btn secondary" onclick="loadCompanies()">Refresh</button>
+            </div>
+            <ul id="company-list" class="list"></ul>
+          </div>
+
+          <div class="card">
+            <h3>Alumni Sponsors</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <small class="hint">Alumni sponsors list</small>
+              <button class="btn secondary" onclick="loadAlumniSponsors()">Refresh</button>
+            </div>
+            <ul id="alumni-list" class="list"></ul>
+          </div>
+          <div class="card">
+  <h3>Gallery</h3>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+    <small class="hint">Manage uploaded images</small>
+    <button class="btn secondary" onclick="loadGallery()">Refresh</button>
+  </div>
+  <ul id="gallery-list" class="list"></ul>
+</div>
+<div class="card">
+  <h3>Crew Members</h3>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+    <small class="hint">Edit to load into the form</small>
+    <button class="btn secondary" onclick="loadCrew()">Refresh</button>
+  </div>
+  <ul id="crew-list" class="list"></ul>
+</div>
+<div class="card">
+  <h3>Subsystems</h3>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+    <small class="hint">Edit to load into form</small>
+    <button class="btn secondary" onclick="loadSubsystems()">Refresh</button>
+  </div>
+  <ul id="subsystem-list" class="list"></ul>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- tiny helper so inlined onclicks can call -->
+  <script>
+    // small helper to allow el() in inline handlers
+    function el(id){ return document.getElementById(id); }
+  </script>
+</body>
+</html>

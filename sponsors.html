@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Torque-X Racing</title>
+
+<style>
+/* --- (kept your styles, small tweaks) --- */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f8f8f8;
+}
+
+/* Navbar */
+.navbar-area {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: white;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.navbar-area nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+.site-logo img {
+    height: 80px;
+}
+.navbar-area ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap:10px;
+}
+.navbar-area ul li {
+    margin-left: 20px;
+}
+.navbar-area ul li a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+.nav-toggler {
+    display: none;
+    cursor: pointer;
+}
+.nav-toggler span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: black;
+    margin: 5px 0;
+}
+
+/* Sponsors */
+.sponserssection1 {
+    padding: 120px 20px 20px 20px;
+    background: white;
+}
+.sponserssection1 h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.sponsers1-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+.sponser1-card {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgb(255, 252, 252);
+    display: flex;
+    flex-direction: column;
+}
+.sponser1-card img {
+    width: 100%;
+    border-radius: 8px;
+}
+.sponser-card .content {
+    margin-top: 10px;
+}
+.sponser1-card a {
+    color: rgb(254, 254, 254);
+    text-decoration: none;
+}
+
+/* Carousel */
+.carousel-wrapper {
+    position: relative;
+    padding: 20px;
+    overflow: hidden;
+    background: none;
+}
+.carousel {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.35s ease-in-out;
+    padding-bottom: 10px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: #fff;
+  border: none; /* removed border */
+  border-radius: 12px;
+  padding: 20px;
+  min-width: 340px;
+  flex-shrink: 0;
+  box-shadow: none; /* removed subtle shadow */
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); 
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}
+.card-header img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+}
+.card-info {
+  flex: 1;
+}
+
+.card-info p {
+  margin: 4px 0;
+  font-size: 15px;
+}
+
+/* Thankyou notes section */
+.card-thanks {
+  margin-top: 10px;
+  width: 100%;
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px dotted #bbb;
+}
+
+.card-thanks strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.card-thanks p {
+  white-space: pre-wrap;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #444;
+}
+
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(33, 150, 243, 0.9);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 10; 
+}
+.left-arrow {
+    left: 10px;
+}
+.right-arrow {
+    right: 10px;
+}
+.dots-container {
+    text-align: center;
+    margin-top: 12px;
+}
+.dot {
+    height: 10px;
+    width: 10px;
+    background: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 5px;
+    cursor: pointer;
+}
+.dot.active {
+    background: #2196f3;
+}
+
+/* Contact */
+.contactsection {
+    padding: 40px 20px;
+    background: #f0f0f0;
+}
+.contact {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+.contactup iframe {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 8px;
+}
+.contactdown {
+    max-width: 400px;
+}
+.contactdown h2 {
+    margin-bottom: 10px;
+}
+
+/* Footer */
+.footer-container {
+    background: #222;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.footer-container h1 {
+    color: white;
+}
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    margin: 0 5px;
+}
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Navbar */
+@media screen and (max-width: 768px) {
+    .navbar-area ul {
+        flex-direction: column;
+        display: none;
+    }
+    .navbar-area ul.active {
+        display: flex;
+    }
+    .nav-toggler {
+        display: block;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="navbar-area">
+    <nav>
+        <a href="index.html" class="site-logo"><img src="logo[1].png" alt="Logo"></a>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+              <li><a href="about.html">About Us</a></li>
+               <li><a href="new.html">Crew</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+               <li><a href="event.html">Events</a></li>
+              <li><a href="#sponserssection">Sponsors</a></li>
+              <li><a href="#contactsection">Contact</a></li>
+              
+        </ul>
+        <div class="nav-toggler"><span></span><span></span><span></span></div>
+    </nav>
+</header>
+
+<!-- Sponsors Section -->
+<section class="sponserssection1" id="sponserssection1">
+    <h1>Our Proud <span>Sponsors</span></h1>
+    <div class="sponsers1-container">
+        <!-- Default hardcoded ones will be replaced by loadCompanySponsors() -->
+    </div>
+</section>
+
+<!-- Alumni Carousel -->
+ <section class="sponserssection1" id="sponserssection1">
+
+ <h1>Alumni sponsors</h1>
+ </section>
+<section class="carousel-wrapper">
+    <button class="arrow left-arrow" aria-label="previous">&#10094;</button>
+    <div class="carousel" id="alumni-carousel"></div>
+    <button class="arrow right-arrow" aria-label="next">&#10095;</button>
+    <div class="dots-container"></div>
+</section>
+
+<!-- Contact Section -->
+<section class="contactsection" id="contactsection">
+    <h1>Contact</h1>
+    <div class="contact">
+        <div class="contactup">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.6835664325304!2d80.22393577489447!3d13.055802687267352!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5266f499eee457%3A0x4d3f7e677496e707!2sMeenakshi%20Sundararajan%20Engineering%20College!5e0!3m2!1sen!2sin!4v1758703790799!5m2!1sen!2sin"
+                height="350"
+                style="border:0; width:100%; border-radius:8px;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+        <div class="contactdown">
+            <div class="locations">
+                <h2>Torque X Racing</h2>
+                <div class="address">
+                    <p>Meenakshi Sundararajan Engineering College</p>
+                </div>
+                <div class="phone">
+                    <p>Phone: +91 9345518925 </p>
+                    <p>Email: <a href="mailto:torquex2025@gmail.com">torquex2025@gmail.com</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<section class="footer-container">
+    <div class="about-footer">
+        <h1>Torque X Racing</h1>
+        <p>Meenakshi Sundararajan Engineering College</p>
+        <div class="footer-links">
+            <a href="https://www.linkedin.com/company/torque-x/"><i class="ri-linkedin-fill"></i></a>
+            <a href="https://www.instagram.com/torque_x_racing?igsh=dXJ5NnF5N3ZlOGc4"><i class="ri-instagram-fill"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=61579414054690&mibextid=ZbWKwL"><i class="ri-facebook-fill"></i></a>
+        </div>
+        <p>Privacy Policy | © 2024 Torque X Racing</p>
+        <p>Developed by <a href="https://www.linkedin.com/in/deepak-m-2a72472a2?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app">Deepak M</a></p>
+    </div>
+
+    <div class="footer-classes">
+        <h1>Quick Links</h1>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="#aboutsection">About Us</a></p>
+        <p><a href="gallery.html">Gallery</a></p>
+        <p><a href="sponsors.html">Sponsors</a></p>
+        <p><a href="#contactsection">Contact</a></p>
+        <p><a href="admin.html">Admin</a></p>
+    </div>
+
+    <div class="working-footer">
+        <h1>Working Hours</h1>
+        <p>Monday - Saturday:</p>
+        <p>9:30am - 5:00pm</p>
+        <p>Sunday:</p>
+        <p>10:00am - 5:00pm</p>
+    </div>
+</section>
+
+<!-- SINGLE module script with firebase + carousel logic -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyApGMnqr5ZRSqHmmmvxe3itP8HCBqlLdsA",
+  authDomain: "torque-x-events.firebaseapp.com",
+  projectId: "torque-x-events",
+  storageBucket: "torque-x-events.appspot.com",
+  messagingSenderId: "244532271723",
+  appId: "1:244532271723:web:1c345e55ed7b71c312af2e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let currentIndex = 0;
+
+/* ---------- helper ---------- */
+function escapeHtml(str = "") {
+  return String(str).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+/* ---------- carousel & dots ---------- */
+function updateDots(total) {
+  const dotsContainer = document.querySelector(".dots-container");
+  dotsContainer.innerHTML = "";
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement("span");
+    dot.classList.add("dot");
+    if (i === currentIndex) dot.classList.add("active");
+    dot.addEventListener("click", () => {
+      currentIndex = i;
+      updateCarousel();
+    });
+    dotsContainer.appendChild(dot);
+  }
+}
+
+function updateCarousel() {
+  const carousel = document.querySelector(".carousel");
+  if (!carousel) return;
+  const cards = carousel.querySelectorAll(".card");
+  if (!cards.length) {
+    carousel.style.transform = "";
+    updateDots(0);
+    return;
+  }
+  const gap = parseInt(getComputedStyle(carousel).gap) || 20;
+  const cardWidth = Math.round(cards[0].getBoundingClientRect().width) + gap;
+  // clamp currentIndex
+  if (currentIndex < 0) currentIndex = 0;
+  if (currentIndex > cards.length - 1) currentIndex = Math.max(0, cards.length - 1);
+  carousel.style.transform = `translateX(${-cardWidth * currentIndex}px)`;
+  updateDots(cards.length);
+}
+
+/* ---------- arrow listeners (attach once) ---------- */
+function attachArrowListeners() {
+  const left = document.querySelector(".left-arrow");
+  const right = document.querySelector(".right-arrow");
+  left?.addEventListener("click", () => {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updateCarousel();
+    }
+  });
+  right?.addEventListener("click", () => {
+    const cards = document.querySelectorAll(".card");
+    if (currentIndex < cards.length - 1) {
+      currentIndex++;
+      updateCarousel();
+    }
+  });
+}
+
+/* ---------- load alumni sponsors ---------- */
+/* ---------- load alumni sponsors (updated layout) ---------- */
+async function loadAlumniSponsors() {
+  try {
+    const alumniCarousel = document.getElementById("alumni-carousel");
+    alumniCarousel.innerHTML = "";
+    const querySnapshot = await getDocs(collection(db, "alumniSponsors"));
+
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="card-header">
+          <img src="${escapeHtml(data.image || 'https://via.placeholder.com/100')}" alt="${escapeHtml(data.name || 'Alumni')}">
+          <div class="card-info">
+            <p><strong>${escapeHtml(data.name || '')}</strong></p>
+            <p>Batch - ${escapeHtml(data.batch || '')}</p>
+          </div>
+        </div>
+        <div class="card-thanks">
+          <strong></strong>
+          <p>${escapeHtml(data.thankNote || '................................................')}</p>
+        </div>
+      `;
+      alumniCarousel.appendChild(card);
+    });
+
+    currentIndex = 0;
+    requestAnimationFrame(() => updateCarousel());
+  } catch (err) {
+    console.error("Failed to load alumni sponsors:", err);
+  }
+}
+
+
+/* ---------- load company sponsors ---------- */
+async function loadCompanySponsors() {
+  try {
+    const container = document.querySelector(".sponsers1-container");
+    container.innerHTML = ""; // clear any hardcoded cards
+
+    const querySnapshot = await getDocs(collection(db, "companies"));
+    // if no companies, you can optionally render a placeholder
+    let any = false;
+    querySnapshot.forEach((docSnap) => {
+      any = true;
+      const data = docSnap.data();
+      const card = document.createElement("div");
+      card.className = "sponser1-card";
+      card.innerHTML = `
+        <img src="${escapeHtml(data.image || 'https://via.placeholder.com/300x150')}" alt="${escapeHtml(data.name || 'Sponsor')}">
+        <div class="content">
+          <p><strong>${escapeHtml(data.name || '')}</strong></p>
+          <p>${escapeHtml(data.description || '')}</p>
+          <p><a href="${escapeHtml(data.registerLink || '#')}" target="_blank" rel="noopener">Visit Site</a></p>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+    if (!any) {
+      // optional fallback: show existing hardcoded sponsors (if you want)
+      container.innerHTML = `
+        <div class="sponser1-card">
+            <img src="sponsor2.jpg" alt="Sponsor1">
+            <div class="content">
+                <p>Acriolis India Motors is a manufacturing unit in automobile industry.</p>
+            </div>
+        </div>
+        <div class="sponser1-card">
+            <img src="sponsor3.jpg" alt="Sponsor1">
+            <div class="content">
+                <p>Ramco Cements is one of the established cement manufacturers in India.</p>
+            </div>
+        </div>
+      `;
+    }
+  } catch (err) {
+    console.error("Failed to load company sponsors:", err);
+  }
+}
+
+/* ---------- nav toggler ---------- */
+function setupNavToggler() {
+  const navToggler = document.querySelector(".nav-toggler");
+  const navMenu = document.querySelector(".navbar-area ul");
+  navToggler?.addEventListener("click", () => {
+    navMenu?.classList.toggle("active");
+  });
+}
+
+/* ---------- init on DOM ready ---------- */
+document.addEventListener("DOMContentLoaded", () => {
+  attachArrowListeners();
+  setupNavToggler();
+
+  // Load both data sets
+  loadCompanySponsors();
+  loadAlumniSponsors();
+
+  // update carousel on resize so transform stays correct
+  window.addEventListener("resize", () => {
+    requestAnimationFrame(updateCarousel);
+  });
+});
+</script>
+
+</body>
+</html>

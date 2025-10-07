@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="index.css" />
+<title>Torque X - Gallery</title>
+
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+
+<style>
+/* ---------- BASIC STYLES ---------- */
+body {
+  font-family: Arial, sans-serif;
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+/* ---------- HEADER ---------- */
+.header-area {
+  background: #f4f0f0;
+  padding: 10px 0;
+}
+
+
+/* ---------- GALLERY ---------- */
+.gallerysection {
+  padding: 40px 0;
+}
+.gallerysection h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #111;
+}
+.gallerysection span {
+  color: #ff3c00;
+}
+
+/* ---------- BATCH TITLE ---------- */
+.batch-title {
+  font-size: 28px;
+  margin: 50px 0 25px;
+  color: #222;
+  font-weight: bold;
+  border-bottom: 3px solid #ff3c00;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* Masonry Layout */
+.gallery-grid {
+  column-count: 4;
+  column-gap: 15px;
+  padding: 0 30px;
+}
+
+@media (max-width: 1024px) {
+  .gallery-grid { column-count: 3; }
+}
+@media (max-width: 768px) {
+  .gallery-grid { column-count: 2; }
+}
+@media (max-width: 480px) {
+  .gallery-grid { column-count: 1; }
+}
+
+/* Each Image */
+.gallery-grid img {
+  width: 100%;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  display: block;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  object-fit: cover;
+  background: #f8f8f8;
+}
+
+/* Maintain portrait/landscape properly */
+.gallery-grid img.landscape {
+  aspect-ratio: 16 / 9;
+}
+.gallery-grid img.portrait {
+  aspect-ratio: 3 / 4;
+}
+
+.gallery-grid img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* ---------- CONTACT ---------- */
+.contactsection {
+  background: #f4f4f4;
+  padding: 30px 0;
+}
+.contactsection iframe {
+  width: 80%;
+  height: 300px;
+  border: none;
+  border-radius: 10px;
+}
+
+/* ---------- FOOTER ---------- */
+.footer-container {
+  background: #222;
+  color: #fff;
+  padding: 30px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  text-align: left;
+}
+.footer-container h1 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.footer-container a {
+  color: #ff3c00;
+  text-decoration: none;
+}
+.footer-container a:hover {
+  text-decoration: underline;
+}
+.footer-container i {
+  font-size: 20px;
+  margin-right: 10px;
+}
+</style>
+</head>
+
+<body>
+<!-- ---------- HEADER ---------- -->
+<header class="header-area">
+  <div class="navbar-area">
+        <div class="container">
+          <nav class="site-navbar">
+            <!-- site logo -->
+            <a href="index.html" class="site-logo"
+              ><img src="logo[1].png" alt=""
+            /></a>
+
+            <!-- site menu/nav -->
+            <ul>
+              <li><a href="#herosection">Home</a></li>
+              <li><a href="#aboutsection">About Us</a></li>
+               <li><a href="new.html">Crew</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+               <li><a href="event.html">Events</a></li>
+              <li><a href="#sponserssection">Sponsors</a></li>
+              <li><a href="#contactsection">Contact</a></li>
+              
+            </ul>
+
+            <!-- nav-toggler for mobile version only -->
+            <button class="nav-toggler">
+              <span></span>
+            </button>
+          </nav>
+        </div>
+      </div>
+</header>
+<script src="script.js"></script>
+
+<!-- ---------- GALLERY SECTION ---------- -->
+<section class="gallerysection">
+  <h1>Photo <span>Gallery</span></h1>
+  <div id="galleryContainer"></div>
+</section>
+
+<!-- ---------- CONTACT ---------- -->
+ <section class="contactsection" id="contactsection">
+      <h1>Contact</h1>
+      <div class="contact">
+        <div class="contactup">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.6835664325304!2d80.22393577489447!3d13.055802687267352!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5266f499eee457%3A0x4d3f7e677496e707!2sMeenakshi%20Sundararajan%20Engineering%20College!5e0!3m2!1sen!2sin!4v1758703790799!5m2!1sen!2sin"
+            height="350"
+            width="400"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            class="map"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+        <div class="contactdown">
+          <div class="locations">
+            <h2>Torque X Racing</h2>
+            <div class="address">
+              <p>Meenakshi sundararajan engineering college</p>
+            </div>
+            <div class="phone">
+              <p>Phone: +91 9345518925 </p>
+              <p>
+                Email:
+                <a href="mailto:torquex2025@gmail.com"
+                  >torquex2025@gmail.com</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="footer-container">
+      <div class="about-footer">
+        <h1>Torque X Racing</h1>
+        <p>
+          Meenakshi sundararajan engineering college
+        </p>
+        <div class="footer-links">
+          <a href="https://www.linkedin.com/company/torque-x/"
+            ><i class="ri-linkedin-fill"></i
+          ></a>
+          <a href="https://www.instagram.com/torque_x_racing?igsh=dXJ5NnF5N3ZlOGc4"
+            ><i class="ri-instagram-fill"></i
+          ></a>
+          <a href="https://www.facebook.com/profile.php?id=61579414054690&mibextid=ZbWKwL"
+            ><i class="ri-facebook-fill"></i
+          ></a>
+          
+        </div>
+        <p>Privacy Policy | © 2024 Torque x racing</p>
+        <p>
+          Developed by
+          <a href="https://www.linkedin.com/in/deepak-m-2a72472a2?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+            >Deepak M</a
+          >
+        </p>
+      </div>
+      <div class="footer-classes">
+        <h1>Quick Links</h1>
+        <p><a href="#herosection">Home</a></p>
+        <p><a href="#aboutsection">About Us</a></p>
+        <p><a href="gallery.html">Gallery</a></p>
+        <p><a href="#sponserssection">Sponsors</a></p>
+        <p><a href="#contactsection">Contact</a></p>
+        <p><a href="admin.html">Admin</a></p>
+      </div>
+      <div class="working-footer">
+        <h1>Working Hours</h1>
+        <p>Monday - saturday:</p>
+        <p>9:30am-5:00pm</p>
+        <p>Sunday</p>
+        <p>10:00am-5:00pm</p>
+      </div>
+    </section>
+
+<!-- ---------- FIREBASE SCRIPT ---------- -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyApGMnqr5ZRSqHmmmvxe3itP8HCBqlLdsA",
+  authDomain: "torque-x-events.firebaseapp.com",
+  projectId: "torque-x-events",
+  storageBucket: "torque-x-events.appspot.com",
+  messagingSenderId: "244532271723",
+  appId: "1:244532271723:web:1c345e55ed7b71c312af2e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function loadGallery() {
+  const galleryContainer = document.getElementById("galleryContainer");
+  const querySnapshot = await getDocs(collection(db, "gallery"));
+
+  const batches = {};
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    if (!batches[data.batch]) batches[data.batch] = [];
+    batches[data.batch].push(data);
+  });
+
+  // Sort batches in reverse (latest batch first)
+  const sortedBatches = Object.keys(batches).sort((a, b) => b.localeCompare(a));
+
+  sortedBatches.forEach(batch => {
+    const batchTitle = document.createElement("h2");
+    batchTitle.className = "batch-title";
+    batchTitle.textContent = `${batch} Batch`;
+    galleryContainer.appendChild(batchTitle);
+
+    const grid = document.createElement("div");
+    grid.className = "gallery-grid";
+
+    batches[batch].forEach(item => {
+      const img = document.createElement("img");
+      img.src = item.image;
+
+      // Detect orientation
+      const image = new Image();
+      image.onload = () => {
+        if (image.width > image.height) img.classList.add("landscape");
+        else img.classList.add("portrait");
+      };
+      image.src = item.image;
+
+      grid.appendChild(img);
+    });
+
+    galleryContainer.appendChild(grid);
+  });
+}
+
+
+loadGallery();
+
+</script>
+</body>
+</html>

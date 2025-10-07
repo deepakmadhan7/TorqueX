@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <link rel="stylesheet" href="" />
+
+  <title>Torque X - News & Events</title>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // 🔹 Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyApGMnqr5ZRSqHmmmvxe3itP8HCBqlLdsA",
+    authDomain: "torque-x-events.firebaseapp.com",
+    projectId: "torque-x-events",
+    storageBucket: "torque-x-events.appspot.com",
+    messagingSenderId: "244532271723",
+    appId: "1:244532271723:web:1c345e55ed7b71c312af2e"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ------------ NEWS LOAD ------------
+  async function loadNews() {
+    const newsList = document.getElementById("news");
+    newsList.innerHTML = "<p>Loading news...</p>";
+
+    try {
+      const querySnapshot = await getDocs(collection(db, "news"));
+      newsList.innerHTML = "";
+
+      if (querySnapshot.empty) {
+        newsList.innerHTML = `
+          <div class="news-card">
+            <img src="https://via.placeholder.com/120" class="news-img">
+            <div class="news-text">
+              <h3>Sample News Title</h3>
+              <p class="date">Aug 2024</p>
+            </div>
+          </div>`;
+      }
+
+      querySnapshot.forEach((doc) => {
+        const news = doc.data();
+        const div = document.createElement("div");
+        div.className = "news-card";
+        div.innerHTML = `
+          <img src="${news.image || 'https://via.placeholder.com/120'}" alt="news" class="news-img">
+          <div class="news-text">
+            <h3>${news.title}</h3>
+            <p class="date">${news.date}</p>
+          </div>`;
+        newsList.appendChild(div);
+      });
+    } catch (err) {
+      console.error("News load error:", err);
+      newsList.innerHTML = "<p>Error loading news.</p>";
+    }
+  }
+
+  // ------------ EVENTS LOAD + SLIDER ------------
+  async function loadEvents() {
+    const slider = document.getElementById("event-slider");
+    slider.innerHTML = "<p>Loading events...</p>";
+
+    try {
+      const querySnapshot = await getDocs(collection(db, "events"));
+      slider.innerHTML = "";
+
+      if (querySnapshot.empty) {
+        slider.innerHTML = `
+          <div class="event-slide">
+            <img src="https://via.placeholder.com/300x200" class="event-img">
+            <div class="event-details">
+              <h3>Sample Event</h3>
+              <p><strong>Date:</strong> Aug 2024</p>
+              <p>Description of event goes here...</p>
+              <button class="btn">Register Now</button>
+            </div>
+          </div>`;
+      }
+
+      querySnapshot.forEach((doc) => {
+        const event = doc.data();
+        const slide = document.createElement("div");
+        slide.className = "event-slide";
+        slide.innerHTML = `
+          <img src="${event.image || 'https://via.placeholder.com/300x200'}" alt="event poster" class="event-img">
+          <div class="event-details">
+            <h3>${event.title}</h3>
+            <p><strong>Date:</strong> ${event.date}</p>
+            <p>${event.description}</p>
+            <a href="${event.registerLink || '#'}" target="_blank">
+              <button class="btn">Register Now</button>
+            </a>
+          </div>`;
+        slider.appendChild(slide);
+      });
+
+      window.initSlider();
+    } catch (err) {
+      console.error("Events load error:", err);
+      slider.innerHTML = "<p>Error loading events.</p>";
+    }
+  }
+
+  // ------------ SLIDER LOGIC ------------
+  window.currentSlide = 0;
+
+  window.initSlider = function () {
+    window.showSlide(0);
+  };
+
+  window.showSlide = function (index) {
+    const slides = document.querySelectorAll(".event-slide");
+    const slider = document.getElementById("event-slider");
+
+    if (slides.length === 0) return;
+    if (index >= slides.length) window.currentSlide = 0;
+    else if (index < 0) window.currentSlide = slides.length - 1;
+    else window.currentSlide = index;
+
+    slider.style.transform = `translateX(-${window.currentSlide * 100}%)`;
+    window.updateDots(slides.length);
+  };
+
+  window.updateDots = function (total) {
+    const dotsContainer = document.getElementById("dots");
+    dotsContainer.innerHTML = "";
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement("span");
+      dot.className = i === window.currentSlide ? "dot active" : "dot";
+      dot.onclick = () => window.showSlide(i);
+      dotsContainer.appendChild(dot);
+    }
+  };
+
+  // 🔹 Swipe Detect
+  let startX = 0;
+  document.addEventListener("DOMContentLoaded", () => {
+    const container = document.querySelector(".slider-container");
+    container.addEventListener("touchstart", (e) => startX = e.touches[0].clientX);
+    container.addEventListener("touchend", (e) => {
+      const endX = e.changedTouches[0].clientX;
+      const diff = endX - startX;
+      if (diff > 50) window.showSlide(window.currentSlide - 1);
+      if (diff < -50) window.showSlide(window.currentSlide + 1);
+    });
+  });
+
+  window.onload = () => {
+    loadNews();
+    loadEvents();
+  };
+</script>
+
+  <style>
+    body { font-family: Arial, sans-serif; background: #fff; margin: 0; padding: 0; }
+    header { background: #fdfefe; padding: 15px; text-align: center; font-size: 40px; font-weight: bold; color: white; }
+    .section { padding: 20px; max-width: 1000px; margin: auto; }
+    h2 { text-transform: uppercase; margin-bottom: 10px; color: #333; }
+
+    /* News */
+    .news-card { display: flex; align-items: center; background: #fff5f5; border-left: 6px solid #ff0000;
+                 padding: 16px; margin: 16px 0; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .news-img { width: 120px; height: 120px; border-radius: 6px; object-fit: cover; margin-right: 15px; }
+    .news-text h3 { margin: 0; font-size: 18px; }
+    .news-text .date { font-size: 14px; color: #666; }
+
+    /* Events Slider */
+    .slider-container { position: relative; overflow: hidden; width: 100%; }
+    #event-slider { display: flex; transition: transform 0.4s ease-in-out; }
+    .event-slide { min-width: 100%; display: flex; background: #fafafa; border: 1px solid #ddd; border-radius: 8px;
+                   margin: 10px 0; padding: 15px; box-sizing: border-box; }
+    .event-img { width: 40%; border-radius: 8px; object-fit: cover; margin-right: 15px; }
+    .event-details { flex: 1; }
+    .event-text h3 { margin: 0; font-size: 30px; }
+    .btn { background: #ff3131; border: none; padding: 10px 20px; color: white; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+    .btn:hover { background: #ff5555; }
+
+    /* Dots */
+    #dots { text-align: center; margin-top: 10px; }
+    .dot { height: 10px; width: 10px; margin: 0 5px; display: inline-block; background-color: #bbb; border-radius: 50%; cursor: pointer; }
+    .dot.active { background-color: #00aaff; }
+
+    /* Prev/Next buttons */
+    .controls { text-align: center; margin-top: 10px; }
+    .ctrl-btn { background: #00aaff; border: none; color: white; padding: 8px 15px; margin: 0 5px;
+                border-radius: 4px; cursor: pointer; }
+    .ctrl-btn:hover { background: #008ecc; }
+    .navbar-area {
+  background: transparent;
+}
+.site-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 7rem;
+}
+.site-logo img {
+  width: 8.5rem;
+  padding: 0;
+}
+.site-logo1 img {
+  width: 42.5rem;
+  padding: 0;
+}
+a.site-logo {
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: transparent;
+  text-decoration: none;
+}
+.site-navbar ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+.site-navbar ul li a {
+  color:#333;
+  font-size: 1rem;
+  padding: 2rem;
+  font-weight: 700;
+  display: block;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.site-navbar ul li a:hover {
+  background: transparent;
+}
+/* navbar regular css end */
+
+/* nav-toggler css start */
+.nav-toggler {
+  /* border: 3px solid var(--color4); */
+  border: 0;
+  outline: 0;
+  padding: 0.5rem;
+  background-color: transparent;
+  cursor: pointer;
+  height: 3.9rem;
+  display: none;
+}
+.nav-toggler span,
+.nav-toggler span:before,
+.nav-toggler span:after {
+  width: 2.8rem;
+  height: 0.3rem;
+  background-color: transparent;
+  display: block;
+  transition: 0.5s;
+}
+.nav-toggler span:before {
+  content: "";
+  transform: translateY(-9px);
+}
+.nav-toggler span:after {
+  content: "";
+  transform: translateY(6px);
+}
+.nav-toggler.toggler-open span {
+  background-color: transparent;
+}
+.nav-toggler.toggler-open span:before {
+  transform: translateY(0px) rotate(45deg);
+}
+.nav-toggler.toggler-open span:after {
+  transform: translateY(-3px) rotate(-45deg);
+}
+.contactsection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  gap: 40px;
+  flex-direction: column;
+  background-color: var(--color3);
+  padding: 80px;
+  border-radius: 40px 40px 0 0;
+  height: 100vh;
+  background: url(../assets/images/aboutbg.jpeg);
+  background-position: center;
+  background-size: cover;
+}
+
+.contactsection h1 {
+  color: var(--color1);
+  font-size: 4.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 0.5em;
+}
+.contact {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+.contact .contactup {
+  width: 100%;
+  height: 100%;
+  border: 4px solid black;
+  outline: 0;
+  border-radius: 14px;
+  background-color: var(--color3);
+}
+.contact .contactup .map {
+  border: 0;
+  outline: 0;
+  border-radius: 10px;
+  width: 100%;
+}
+.contact .contactdown {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  height: auto;
+  width: 100%;
+  margin-top: 5px;
+  .carousel img.active {
+        display: block;
+        opacity: 1;
+        position: relative;
+    }
+
+    @media (max-width: 768px) {
+        p {
+            padding: 0 10px;
+        }
+    }
+}
+.contact .contactdown h2 {
+  color: var(--color1);
+}
+.contact .contactdown .locations {
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  justify-content: space-evenly;
+  color: var(--color2);
+  padding: 20px;
+  background-color: var(--color3);
+  border-radius: 10px;
+  width: 100%;
+}
+.contact .contactdown .locations p {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+.contact .contactdown .locations p a {
+  color: var(--color2);
+}
+.contact .contactdown .locations p a:hover {
+  color: var(--color1);
+}
+.contact .contactdown .locations h2 {
+  font-size: 2.5rem;
+  text-transform: uppercase;
+}
+/* mobile breakpoint start */
+@media screen and (max-width: 767px) {
+  html {
+    font-size: 45%;
+  }
+
+  .nav-toggler {
+    display: block;
+  }
+  .site-navbar {
+    min-height: 8rem;
+    justify-content: space-between;
+    padding: 0 10px;
+  }
+  .site-navbar ul {
+    position: absolute;
+    width: 100%;
+    height: calc(100vh - 60px);
+    left: 0;
+    top: 6rem;
+    justify-content: center;
+    gap: 20px;
+    height: 60vh;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: var(--color3);
+    max-height: 0;
+    overflow: hidden;
+    transition: 0.4s ease-in-out;
+  }
+  .site-navbar ul li {
+    width: 100%;
+    text-align: center;
+  }
+  .site-navbar ul li a {
+    padding: 2.5rem;
+    font-size: 2.5rem;
+  }
+  .site-navbar ul li a:hover {
+    background-color: rgb(255, 255, 255);
+  }
+  .site-navbar ul.open {
+    max-height: 100vh;
+    overflow: visible;
+  }
+  .intro-area h2 {
+    font-size: 3.6rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+  .footer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10rem;
+  height: 50vh;
+}
+.footer-container .about-footer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 2rem;
+  height: 40vh;
+  padding-top: 20px;
+  width: 60rem;
+}
+.footer-container .about-footer a:hover {
+  color: var(--color1);
+}
+.footer-container .footer-classes {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  padding-top: 20px;
+  gap: 2rem;
+  height: 40vh;
+}
+.footer-container .working-footer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 2rem;
+  padding-top: 20px;
+  height: 40vh;
+}
+.footer-container .working-footer h1 {
+  color: var(--color1);
+}
+.footer-container .working-footer p {
+  font-size: 1.5rem;
+  color: grey;
+}
+.footer-container .working-footer p:nth-child(even) {
+  color: darkgray;
+  font-weight: 800;
+}
+.footer-container .footer-classes p {
+  transition: transform 0.3s ease-in-out;
+}
+.footer-container .footer-classes p a {
+  font-size: 1.5rem;
+  color: grey;
+  transition: transform 0.3s ease-in-out;
+  cursor: pointer;
+}
+.footer-container .footer-classes p:hover {
+  transform: scale(1.1);
+}
+.footer-container .footer-classes p a:hover {
+  color: var(--color1);
+}
+.footer-container .about-footer h1 {
+  font-size: 3.5rem;
+  color: var(--color1);
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+}
+.footer-container .footer-classes h1 {
+  color: var(--color1);
+  border-bottom: 2px solid var(--color1);
+}
+.footer-container .working-footer h1 {
+  border-bottom: 2px solid var(--color1);
+}
+
+.footer-container .about-footer p {
+  font-size: 1.5rem;
+  color: grey;
+}
+.footer-container .about-footer p a {
+  color: grey;
+}
+.footer-container .about-footer .footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+}
+.footer-container .about-footer .footer-links i {
+  color: var(--color2);
+  font-size: 2.2rem;
+  transition: color 0.3s ease-in-out;
+}
+.footer-container .about-footer .footer-links i:hover {
+  color: var(--color1);
+}
+/* footer media quieries*/
+
+@media (max-width: 780px) {
+  .footer-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+    height: 100%;
+    margin: 10rem 0;
+  }
+  .footer-container .about-footer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2rem;
+    height: 100%;
+    width: 25rem;
+  }
+  .footer-container .footer-classes {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2rem;
+    height: 100%;
+  }
+  .footer-container .working-footer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2rem;
+    height: 100%;
+  }
+}
+@media (max-width: 480px) {
+  .footer-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 5rem;
+    padding-left: 2rem;
+    height: 100%;
+    margin: 10rem 0;
+  }
+  .footer-container .about-footer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2rem;
+    height: 100%;
+    width: 95%;
+  }
+  .footer-container .footer-classes {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2rem;
+    height: 100%;
+  }
+  .footer-container .working-footer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2rem;
+    height: 100%;
+  }
+  
+}
+
+
+  </style>
+<header class="header-area">
+  <div class="navbar-area">
+        <div class="container">
+          <nav class="site-navbar">
+            <!-- site logo -->
+            <a href="index.html" class="site-logo"
+              ><img src="logo[1].png" alt=""
+            /></a>
+
+            <!-- site menu/nav -->
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about.html">About Us</a></li>
+               <li><a href="new.html">Crew</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+               <li><a href="event.html">Events</a></li>
+              <li><a href="sponsors.html">Sponsors</a></li>
+              <li><a href="#contactsection">Contact</a></li>
+              
+            </ul>
+
+            <!-- nav-toggler for mobile version only -->
+            <button class="nav-toggler">
+              <span></span>
+            </button>
+          </nav>
+        </div>
+      </div>
+</header>
+<script src="script.js"></script>
+
+<body>
+  <header>Torque X - News & Events</header>
+
+  <div class="section">
+    <h2>News</h2>
+    <div id="news"></div>
+  </div>
+
+  <div class="section">
+    <h2>Events</h2>
+    <div class="slider-container">
+      <div id="event-slider"></div>
+    </div>
+    <div id="dots"></div>
+    <div class="controls">
+  <button class="ctrl-btn" onclick="showSlide(window.currentSlide - 1)">⬅ Prev</button>
+  <button class="ctrl-btn" onclick="showSlide(window.currentSlide + 1)">Next ➡</button>
+</div>
+
+  </div>
+  <section class="contactsection" id="contactsection">
+      <h1>Contact</h1>
+      <div class="contact">
+        <div class="contactup">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.6835664325304!2d80.22393577489447!3d13.055802687267352!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5266f499eee457%3A0x4d3f7e677496e707!2sMeenakshi%20Sundararajan%20Engineering%20College!5e0!3m2!1sen!2sin!4v1758703790799!5m2!1sen!2sin"
+            height="350"
+            width="400"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            class="map"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+        <div class="contactdown">
+          <div class="locations">
+            <h2>Torque X Racing</h2>
+            <div class="address">
+              <p>Meenakshi sundararajan engineering college</p>
+            </div>
+            <div class="phone">
+              <p>Phone: +91 9345518925 </p>
+              <p>
+                Email:
+                <a href="mailto:torquex2025@gmail.com"
+                  >torquex2025@gmail.com</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="footer-container">
+      <div class="about-footer">
+        <h1>Torque X Racing</h1>
+        <p>
+          Meenakshi sundararajan engineering college
+        </p>
+        <div class="footer-links">
+          <a href="https://www.linkedin.com/company/torque-x/"
+            ><i class="ri-linkedin-fill"></i
+          ></a>
+          <a href="https://www.instagram.com/torque_x_racing?igsh=dXJ5NnF5N3ZlOGc4"
+            ><i class="ri-instagram-fill"></i
+          ></a>
+          <a href="https://www.facebook.com/profile.php?id=61579414054690&mibextid=ZbWKwL"
+            ><i class="ri-facebook-fill"></i
+          ></a>
+          
+        </div>
+        <p>Privacy Policy | © 2024 Torque x racing</p>
+        <p>
+          Developed by
+          <a href="https://www.linkedin.com/in/deepak-m-2a72472a2?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+            >Deepak M</a
+          >
+        </p>
+      </div>
+      <div class="footer-classes">
+        <h1>Quick Links</h1>
+        <p><a href="#herosection">Home</a></p>
+        <p><a href="#aboutsection">About Us</a></p>
+        <p><a href="gallery.html">Gallery</a></p>
+        <p><a href="#sponserssection">Sponsors</a></p>
+        <p><a href="#contactsection">Contact</a></p>
+        <p><a href="admin.html">Admin</a></p>
+      </div>
+      <div class="working-footer">
+        <h1>Working Hours</h1>
+        <p>Monday - saturday:</p>
+        <p>9:30am-5:00pm</p>
+        <p>Sunday</p>
+        <p>10:00am-5:00pm</p>
+      </div>
+    </section>
+</body>
+</html>

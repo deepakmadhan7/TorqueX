@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="index.css" />
+  <title>Torque X — Achievements & Vision</title>
+  <style>
+    :root {
+      --accent: #ff3131;
+      --dark: #0a0a0a;
+      --light: #fff;
+      --gray: #d1d1d1;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background-color: var(--light);
+      color: var(--light);
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px 10px;
+      color: var(--dark);
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
+      flex-wrap: wrap;
+      padding: 60px 10%;
+    }
+
+    .content {
+      flex: 1 1 400px;
+      max-width: 500px;
+    }
+
+    .content h2 {
+      color: var(--dark);
+      font-size: 3rem;
+      margin-bottom: 15px;
+      border-left: 5px solid var(--accent);
+      padding-left: 10px;
+    }
+
+    .content p {
+      color: var(--dark);
+      line-height: 1.7;
+      font-size: 2rem;
+    }
+
+    .image-container {
+      flex: 1 1 400px;
+      text-align: center;
+    }
+    .contacthead h1 {
+  color: var(--color1);
+  font-size: 4.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 0.5em;
+    }
+
+    .image-container img {
+      width: 100%;
+      max-width: 500px;
+      height: 350px;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(255, 49, 49, 0);
+      transition: all 0.4s ease;
+    }
+    .image-container1 {
+      flex: 1 1  500px;
+      text-align: center;
+    }
+
+    .image-container1 img {
+      width: 100%;
+      max-width: 500px;
+      height: 500px;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(255, 49, 49, 0);
+      transition: all 0.4s ease;
+    }
+
+    .fade {
+      animation: fade 1s ease-in-out;
+    }
+
+    @keyframes fade {
+      from { opacity: 0.4; }
+      to { opacity: 1; }
+    }
+
+    
+
+    /* Reverse layout for Vision section */
+    #vision {
+      flex-direction: row-reverse;
+    }
+
+    @media (max-width: 900px) {
+      section {
+        flex-direction: column;
+        text-align: center;
+      }
+      #vision {
+        flex-direction: column;
+      }
+      .content h2 {
+        border-left: none;
+        border-bottom: 3px solid var(--accent);
+        padding-left: 0;
+        padding-bottom: 8px;
+        display: inline-block;
+      }
+      
+    }
+  </style>
+</head>
+<body>
+     <div class="navbar-area">
+        <div class="container">
+          <nav class="site-navbar">
+            <!-- site logo -->
+            <a href="index.html" class="site-logo"
+              ><img src="logo[1].png" alt=""
+            /></a>
+
+            <!-- site menu/nav -->
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about.html">About Us</a></li>
+               <li><a href="new.html">Crew</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+               <li><a href="event.html">Events</a></li>
+              <li><a href="sponsors.html">Sponsors</a></li>
+              <li><a href="#contactsection">Contact</a></li>
+              
+              
+            </ul>
+
+            <!-- nav-toggler for mobile version only -->
+            <button class="nav-toggler">
+              <span></span>
+            </button>
+          </nav>
+<header>ABOUT TORQUE-<span style="color:#dd0505;">X</span></header>
+
+  <!-- ======================= ACHIEVEMENTS SECTION ======================= -->
+  <section id="achievements">
+    <div class="image-container">
+      <img src="" alt="" />
+    </div>
+    <div class="content">
+      <h2>Our Achievements</h2>
+      <p>
+        Team Torque-X is proud to be recognized by Tata Motors through the SAE BAJA Innovation Event! 
+Our innovation — an HCNG Gas Leakage Detection System — was designed to enhance the safety of hydrogen-enriched CNG (HCNG) vehicles by detecting and alerting users of any gas leaks in real time.
+
+This recognition by Tata Motors and the BAJA committee stands as a huge validation of our idea and engineering effort. Months of hard work, late-night problem-solving, and non-stop passion have driven us to this proud milestone — and this is only the beginning!
+      </p>
+    </div>
+  </section>
+
+  <!-- ======================= VISION & MISSION SECTION ======================= -->
+  <section id="vision">
+    <div class="image-container1">
+      <img src="car.jpg" alt="Vision and Mission" />
+    </div>
+    <div class="content">
+      <h2>Vision</h2>
+      <p>
+        Our vision is to shape the future of sustainable mobility through
+        innovative electric vehicle engineering. We aim to nurture the next
+        generation of engineers by encouraging creativity, teamwork, and
+        technical expertise. Our mission is to continuously improve our designs,
+        enhance performance, and promote green technologies while representing
+        our institution at the national level with pride and excellence.
+      </p><br><br><br><br>
+      <h2> Mission</h2>
+      <p>
+        Our vision is to shape the future of sustainable mobility through
+        innovative electric vehicle engineering. We aim to nurture the next
+        generation of engineers by encouraging creativity, teamwork, and
+        technical expertise. Our mission is to continuously improve our designs,
+        enhance performance, and promote green technologies while representing
+        our institution at the national level with pride and excellence.
+      </p>
+    </div>
+  </section>
+
+  <section class ="contacthead"   id="contacthead"><h1>CONTACT</h1></section>
+  <section class="contactsection" id="contactsection">
+      
+      <div class="contact">
+        <div class="contactup">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.6835664325304!2d80.22393577489447!3d13.055802687267352!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5266f499eee457%3A0x4d3f7e677496e707!2sMeenakshi%20Sundararajan%20Engineering%20College!5e0!3m2!1sen!2sin!4v1758703790799!5m2!1sen!2sin"
+            height="350"
+            width="400"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            class="map"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+        <div class="contactdown">
+          <div class="locations">
+            <h2>Torque X Racing</h2>
+            <div class="address">
+              <p>Meenakshi sundararajan engineering college</p>
+            </div>
+            <div class="phone">
+              <p>Phone: +91 9345518925 </p>
+              <p>
+                Email:
+                <a href="mailto:torquex2025@gmail.com"
+                  >torquex2025@gmail.com</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="footer-container">
+      <div class="about-footer">
+        <h1>Torque X Racing</h1>
+        <p>
+          Meenakshi sundararajan engineering college
+        </p>
+        <div class="footer-links">
+          <a href="https://www.linkedin.com/company/torque-x/"
+            ><i class="ri-linkedin-fill"></i
+          ></a>
+          <a href="https://www.instagram.com/torque_x_racing?igsh=dXJ5NnF5N3ZlOGc4"
+            ><i class="ri-instagram-fill"></i
+          ></a>
+          <a href="https://www.facebook.com/profile.php?id=61579414054690&mibextid=ZbWKwL"
+            ><i class="ri-facebook-fill"></i
+          ></a>
+          
+        </div>
+        <p>Privacy Policy | © 2024 Torque x racing</p>
+        <p>
+          Developed by
+          <a href="https://www.linkedin.com/in/deepak-m-2a72472a2?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+            >Deepak M</a
+          >
+        </p>
+      </div>
+      <div class="footer-classes">
+        <h1>Quick Links</h1>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="about.html">About Us</a></p>
+        <p><a href="gallery.html">Gallery</a></p>
+        <p><a href="sponsors.html">Sponsors</a></p>
+        <p><a href="#contactsection">Contact</a></p>
+        <p><a href="admin.html">Admin</a></p>
+      </div>
+      <div class="working-footer">
+        <h1>Working Hours</h1>
+        <p>Monday - saturday:</p>
+        <p>9:30am-5:00pm</p>
+        <p>Sunday</p>
+        <p>10:00am-5:00pm</p>
+      </div>
+    </section>
+
+  <!-- ======================= SLIDESHOW SCRIPT ======================= -->
+  <script>
+    const achievementsImages = [ "inno.jpg","pro.jpg"];
+    const visionImages = ["car.jpg", "car1.jpg", "g3.jpg"];
+
+    let achieveIndex = 0;
+    let visionIndex = 0;
+
+    const achieveImg = document.querySelector("#achievements img");
+    const visionImg = document.querySelector("#vision img");
+
+    function changeImage(imgElem, images, indexRef) {
+      imgElem.classList.remove("fade");
+      void imgElem.offsetWidth; // restart animation
+      imgElem.classList.add("fade");
+      imgElem.src = images[indexRef];
+    }
+
+    setInterval(() => {
+      achieveIndex = (achieveIndex + 1) % achievementsImages.length;
+      changeImage(achieveImg, achievementsImages, achieveIndex);
+    }, 3000);
+
+    setInterval(() => {
+      visionIndex = (visionIndex + 1) % visionImages.length;
+      changeImage(visionImg, visionImages, visionIndex);
+    }, 3000);
+  </script>
+   <script src="script.js"></script>
+</body>
+</html>
