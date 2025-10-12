@@ -490,9 +490,10 @@ function displayBatchEvent(index, crew) {
   const [batchName, eventNameRaw] = batchEvents[index].split("|");
   const batchCrew = crew.filter(c => c.batch === batchName && c.event === eventNameRaw);
 
+  
   const formattedEvent = eventNameRaw.toUpperCase().includes("BAJA")
     ? `SAE ${eventNameRaw.toUpperCase()}`
-    : `SAE ${eventNameRaw.toUpperCase()} BAJA`;
+    : ` ${eventNameRaw.toUpperCase()} `;
 
   // Update headers
   document.getElementById("batchTitle").textContent = batchName;
@@ -596,4 +597,5 @@ loadCrew();
 
 </body>
 </html>
+
 
