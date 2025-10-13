@@ -501,7 +501,17 @@ function displayBatchEvent(index, crew) {
 
   // ---- CAPTAIN & VICE CAPTAIN ----
   const captain = batchCrew.find(c => c.role.toLowerCase() === "captain");
-  const viceCaptain = batchCrew.find(c => c.role.toLowerCase().includes("vice"));
+ let viceCaptain = batchCrew.find(c => c.role.toLowerCase().includes("vice"));
+if (!viceCaptain) {
+  viceCaptain = batchCrew.find(c => c.role.toLowerCase().includes("manager"));
+}
+
+// Change the title dynamically
+const viceTitleElement = document.querySelector('.leader-box:nth-child(2) h3');
+viceTitleElement.textContent = viceCaptain
+  ? viceCaptain.role.toUpperCase()
+  : "VICE CAPTAIN"; // default if nothing foun
+
 
   document.getElementById("captainImg").src = captain?.image || "https://via.placeholder.com/160";
   document.getElementById("captainName").textContent = captain?.name || "";
@@ -597,5 +607,6 @@ loadCrew();
 
 </body>
 </html>
+
 
 
