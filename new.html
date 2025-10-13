@@ -575,6 +575,7 @@ viceTitleElement.textContent = viceCaptain
   const others = batchCrew.filter(c =>
     !c.role.toLowerCase().includes("captain") &&
     !c.role.toLowerCase().includes("driver") &&
+    !c.role.toLowerCase().includes("manager") &&
     !fixedSubsystems.includes(c.role.toLowerCase())
   );
 
@@ -607,6 +608,7 @@ loadCrew();
 
 </body>
 </html>
+
 
 
 
