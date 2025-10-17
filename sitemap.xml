@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://torquex.org/</loc>
+    <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://torquex.org/about.html</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://torquex.org/team.html</loc>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://torquex.org/events.html</loc>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://torquex.org/contact.html</loc>
+    <priority>0.70</priority>
+  </url>
+</urlset>
